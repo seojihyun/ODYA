@@ -1,6 +1,12 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 import seojihyun.odya.pineapple.R;
+import seojihyun.odya.pineapple.ar.data.DataHandler;
+import seojihyun.odya.pineapple.ar.data.DataSource;
+import seojihyun.odya.pineapple.ar.etc.Compatibility;
+import seojihyun.odya.pineapple.ar.gui.PaintScreen;
+import seojihyun.odya.pineapple.ar.render.Matrix;
+
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -18,7 +24,6 @@ import android.location.LocationManager;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;

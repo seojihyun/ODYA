@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.gui;
 
 /**
  * Created by SEOJIHYUN on 2016-04-04.

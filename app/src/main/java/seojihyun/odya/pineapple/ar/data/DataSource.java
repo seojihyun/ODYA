@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.data;
 
 
 import android.content.res.Resources;

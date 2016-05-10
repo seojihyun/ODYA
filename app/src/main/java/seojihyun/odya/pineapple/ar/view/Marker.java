@@ -1,10 +1,19 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 
 import android.location.Location;
 
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
+
+import seojihyun.odya.pineapple.ar.data.DataSource;
+import seojihyun.odya.pineapple.ar.gui.PaintScreen;
+import seojihyun.odya.pineapple.ar.gui.ScreenLine;
+import seojihyun.odya.pineapple.ar.gui.ScreenObj;
+import seojihyun.odya.pineapple.ar.gui.TextObj;
+import seojihyun.odya.pineapple.ar.reality.PhysicalPlace;
+import seojihyun.odya.pineapple.ar.render.Camera;
+import seojihyun.odya.pineapple.ar.render.MixVector;
 
 // 화면에 찍힐 마커를 담당할 클래스. Comparable 구현
 abstract public class Marker implements Comparable<Marker> {

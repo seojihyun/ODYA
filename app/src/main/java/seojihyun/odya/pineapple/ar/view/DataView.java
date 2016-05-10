@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 /**
  * Created by SEOJIHYUN on 2016-04-04.
@@ -18,6 +18,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import seojihyun.odya.pineapple.R;
+import seojihyun.odya.pineapple.ar.data.DataHandler;
+import seojihyun.odya.pineapple.ar.data.DataSource;
+import seojihyun.odya.pineapple.ar.gui.PaintScreen;
+import seojihyun.odya.pineapple.ar.gui.RadarPoints;
+import seojihyun.odya.pineapple.ar.gui.ScreenLine;
+import seojihyun.odya.pineapple.ar.render.Camera;
 
 public class DataView {
 

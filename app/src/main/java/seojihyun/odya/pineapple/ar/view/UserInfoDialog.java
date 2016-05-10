@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;

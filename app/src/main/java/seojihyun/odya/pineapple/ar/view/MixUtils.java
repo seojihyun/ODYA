@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 /**
  * Created by SEOJIHYUN on 2016-04-04.

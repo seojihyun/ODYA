@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.data;
 
 import android.location.Location;
 import android.util.Log;
@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+
+import seojihyun.odya.pineapple.ar.view.Marker;
+import seojihyun.odya.pineapple.ar.view.MixContext;
+import seojihyun.odya.pineapple.ar.view.MixView;
 
 // 데이터 핸들러 클래스. 마커 오브젝트와 연동된다
 public class DataHandler {

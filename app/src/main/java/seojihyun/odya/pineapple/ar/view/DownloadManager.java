@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 
 import android.util.Log;
@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+
+import seojihyun.odya.pineapple.ar.data.DataSource;
+import seojihyun.odya.pineapple.ar.data.Json;
 
 // 다운로드 관리자 클래스. 스레드로 관리
 public class DownloadManager implements Runnable {

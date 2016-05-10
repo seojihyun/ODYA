@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 
 import android.app.Activity;
@@ -41,6 +41,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
+
+import seojihyun.odya.pineapple.ar.data.DataSource;
+import seojihyun.odya.pineapple.ar.render.Matrix;
 
 // 컨텍스트랩퍼를 확장하는 컨텍스트 클래스
 public class MixContext extends ContextWrapper {

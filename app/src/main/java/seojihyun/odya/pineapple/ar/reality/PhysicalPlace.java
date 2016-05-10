@@ -1,6 +1,8 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.reality;
 
 import android.location.Location;
+
+import seojihyun.odya.pineapple.ar.render.MixVector;
 
 /**
  * Created by SEOJIHYUN on 2016-04-04.

@@ -106,7 +106,7 @@
         <activity android:name=".activities.GrouplistActivity" />
         <activity android:name=".activities.MainActivity" />
         <activity
-            android:name=".ar.MixView"
+            android:name=".ar.view.MixView"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape" >
@@ -134,7 +134,7 @@
                 android:name="android.app.default_searchable"
                 android:value=".ar.MixView" />
         </activity>
-        <activity android:name=".ar.MixListView"
+        <activity android:name=".ar.view.MixListView"
             android:launchMode="singleTop"
             android:screenOrientation="user" >
             <intent-filter>

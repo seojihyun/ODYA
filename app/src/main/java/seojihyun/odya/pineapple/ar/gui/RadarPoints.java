@@ -1,6 +1,11 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.gui;
 
 import android.graphics.Color;
+
+import seojihyun.odya.pineapple.ar.view.DataView;
+import seojihyun.odya.pineapple.ar.view.Marker;
+import seojihyun.odya.pineapple.ar.data.DataHandler;
+import seojihyun.odya.pineapple.ar.data.DataSource;
 
 /** Takes care of the small radar in the top left corner and of its points
  * @author daniele

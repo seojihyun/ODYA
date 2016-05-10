@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.gui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

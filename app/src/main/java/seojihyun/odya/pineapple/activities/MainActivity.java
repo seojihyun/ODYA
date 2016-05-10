@@ -1,7 +1,5 @@
 package seojihyun.odya.pineapple.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,7 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 
 import seojihyun.odya.pineapple.adapters.NoticeAdapter;
-import seojihyun.odya.pineapple.ar.MixView;
+import seojihyun.odya.pineapple.ar.view.MixView;
 import seojihyun.odya.pineapple.dialogs.NoticeDialog;
 import seojihyun.odya.pineapple.protocol.GpsInfo;
 import seojihyun.odya.pineapple.R;

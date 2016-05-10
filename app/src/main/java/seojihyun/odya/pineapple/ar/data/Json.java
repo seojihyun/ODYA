@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.data;
 
 import android.util.Log;
 
@@ -9,6 +9,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import seojihyun.odya.pineapple.ar.view.Marker;
+import seojihyun.odya.pineapple.ar.view.MixView;
+import seojihyun.odya.pineapple.ar.view.POIMarker;
 
 // JSON 파일을 다루는 클래스
 public class Json extends DataHandler {

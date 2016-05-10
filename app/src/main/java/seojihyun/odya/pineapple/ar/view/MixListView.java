@@ -1,4 +1,4 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -35,6 +34,8 @@ import java.util.List;
 import java.util.Vector;
 
 import seojihyun.odya.pineapple.R;
+import seojihyun.odya.pineapple.ar.data.DataHandler;
+import seojihyun.odya.pineapple.ar.data.DataSource;
 
 // 리스트 액티비티를 확장하는 리스트 뷰 클래스
 public class MixListView extends ListActivity {

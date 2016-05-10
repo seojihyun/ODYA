@@ -1,6 +1,8 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
 
 import android.location.Location;
+
+import seojihyun.odya.pineapple.ar.data.DataSource;
 
 /**
  * Created by SEOJIHYUN on 2016-04-04.

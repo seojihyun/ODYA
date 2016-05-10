@@ -1,4 +1,8 @@
-package seojihyun.odya.pineapple.ar;
+package seojihyun.odya.pineapple.ar.view;
+
+import seojihyun.odya.pineapple.ar.render.Matrix;
+import seojihyun.odya.pineapple.ar.render.MixVector;
+
 /**
  * Created by SEOJIHYUN on 2016-04-04.
  */
