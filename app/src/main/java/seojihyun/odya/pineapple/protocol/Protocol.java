@@ -64,6 +64,10 @@ public class Protocol {
     public static final String URL_GET_MY_GROUP_USERS_DATA = Protocol.URL + "getmygroupusersdata.php";
     public static final String URL_EXIT_GROUP=Protocol.URL + "exitgroup.php";
 
+    //2016-05-09 AR 로 연결
+    public static final String URL_AR_GET_USER_LOCATION = Protocol.URL + "ar_getuserLocation.php";
+    public static final String URL_AR_GET_ALL_USER_LOCATION = Protocol.URL + "ar_getalluserlocation.php";
+
     /* Client측에서 해결하는 Task*/
     //static final String URL_CHECK_GROUP_PWD="CHECK_GROUP_PWD";
 

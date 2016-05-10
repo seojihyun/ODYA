@@ -1,5 +1,7 @@
 package seojihyun.odya.pineapple.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
+import seojihyun.odya.pineapple.ar.MixView;
 import seojihyun.odya.pineapple.protocol.GpsInfo;
 import seojihyun.odya.pineapple.R;
 import seojihyun.odya.pineapple.adapters.UserAdapter;
@@ -66,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
     HashMap<Marker, UserData> mMarkersHashMap; //마커를 통해 UserData find
     HashMap<UserData, Marker> mUserDatasHashMap; // UserData를 통해 마커 find // 2016-03-31 서지현
     MapInfoWindowAdapter mMapInfoWindowAdapter; //어뎁터
+
+    /*AR 관련 변수*/
+    Button arButton;
+
+
 
     /* create 순서 (Map Tab 기준)
     * 1. dataManager 객체 얻기
@@ -154,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         //어뎁터 부착
         mMapInfoWindowAdapter = new MapInfoWindowAdapter();
         mMap.setInfoWindowAdapter(mMapInfoWindowAdapter);
+
     }
 
 
@@ -559,6 +568,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //AR로 연결 - activity
+                        //2016-05-09
+                        String user_phone_to_track = ((TextView) findViewById(R.id.text_infowindow_phone)).getText().toString();
+                        String user_name_to_track = ((TextView) findViewById(R.id.text_infowindow_name)).getText().toString();
+                        Toast.makeText(
+                                getApplicationContext(),
+                                user_name_to_track + "님의 위치 추적(AR)",
+                                Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(getApplicationContext(), MixView.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
                 button_call.setOnClickListener(new View.OnClickListener() {
@@ -609,6 +629,41 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();    // 알림창 객체 생성
         dialog.show();    // 알림창 띄우기
         //super.onBackPressed();
+    }
+
+    // 2016-05-09 서지현
+
+    class ArClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            String user_phone_to_track = ((TextView) findViewById(R.id.text_infowindow_phone)).getText().toString();
+            String user_name_to_track = ((TextView) findViewById(R.id.text_infowindow_name)).getText().toString();
+            Toast.makeText(
+                    getApplicationContext(),
+                    user_name_to_track + "님의 위치 추적(AR)",
+                    Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(getApplicationContext(), MixView.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+    //id button_infowindow_ar 에서 onClick시 호출
+    // 특정 유저 위치 추적 (AR로 연결)
+    public void particularUserLocation(View view) {
+        String user_phone_to_track = ((TextView) findViewById(R.id.text_infowindow_phone)).getText().toString();
+        String user_name_to_track = ((TextView) findViewById(R.id.text_infowindow_name)).getText().toString();
+        Toast.makeText(
+                getApplicationContext(),
+                user_name_to_track + "님의 위치 추적(AR)",
+                Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, MixView.class);
+        startActivity(intent);
+        this.finish();
+        //dataManager.command(Protocol.URL_AR_GET_USER_LOCATION, user_phone_to_track, "", "", "", "");
+
     }
 
 }

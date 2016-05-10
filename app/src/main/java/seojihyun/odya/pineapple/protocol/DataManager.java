@@ -41,13 +41,15 @@ public class DataManager extends Application {
     public Vector<GroupData> groups = new Vector<GroupData>(); //현재 서버에 존재하는 모든 그룹 정보
     private String data; //서버로부터 받은 메세지 (프로토콜)
     private Activity activity; //현재 실행중인 액티비티
-    private Activity background;
+    private BackgroundActivity backgroundActivity=null;
 
     public DataManager() {}
 
     // 액티비티 등록
     public void setActivity(Activity activity) {
         this.activity = activity;
+        //if(activity.getClass().getSimpleName().equals("BackgroundActivity")) backgroundActivity = (BackgroundActivity) activity;
+        //if(backgroundActivity != null) backgroundActivity.setCurrentActivity(activity);
     }
     // 액티비티 전환
     public void changeActivity(String activityName) {
@@ -88,7 +90,7 @@ public class DataManager extends Application {
         //if(!activity.getClass().getSimpleName().equals("BackgroundActivity")) {
             // BackgroundActivity만 종료 하지 않음
             activity.finish();
-        //}
+       // }
 
     }
 
@@ -205,6 +207,12 @@ public class DataManager extends Application {
 
                     //서버와의 통신
                     //.userData의 group_name을 NULL로 표시
+                    connectURL(params);
+                    break;
+                case Protocol.URL_AR_GET_USER_LOCATION:
+                    connectURL(params);
+                    break;
+                case Protocol.URL_AR_GET_ALL_USER_LOCATION:
                     connectURL(params);
                     break;
             } //end switch

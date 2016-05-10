@@ -1,5 +1,6 @@
 package seojihyun.odya.pineapple;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.nearby.messages.Message;
 
 import seojihyun.odya.pineapple.protocol.DataManager;
 import seojihyun.odya.pineapple.protocol.Protocol;
@@ -20,6 +22,7 @@ import static seojihyun.odya.pineapple.CommonUtilities.EXTRA_MESSAGE;
 import static seojihyun.odya.pineapple.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 
 public class BackgroundActivity extends AppCompatActivity {
+    Activity currentActivity;
     DataManager dataManager;
     TextView lblMessage;
     // Asyntask
@@ -34,6 +37,7 @@ public class BackgroundActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataManager = (DataManager)getApplicationContext();
+        dataManager.setActivity(this);
         setContentView(R.layout.activity_background);
 
         cd = new ConnectionDetector(getApplicationContext());
@@ -126,6 +130,10 @@ public class BackgroundActivity extends AppCompatActivity {
             lblMessage.append(newMessage + "\n");
             Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
 
+            //2016-05-05
+            //new MessageDialog(currentActivity, newMessage);
+
+
             // Releasing wake lock
             WakeLocker.release();
         }
@@ -145,4 +153,7 @@ public class BackgroundActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public void setCurrentActivity(Activity currentActivity) {
+        this.currentActivity = currentActivity;
+    }
 }
