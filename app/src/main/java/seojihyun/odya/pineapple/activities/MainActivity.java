@@ -12,8 +12,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,11 +34,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
+import seojihyun.odya.pineapple.adapters.NoticeAdapter;
 import seojihyun.odya.pineapple.ar.MixView;
+import seojihyun.odya.pineapple.dialogs.NoticeDialog;
 import seojihyun.odya.pineapple.protocol.GpsInfo;
 import seojihyun.odya.pineapple.R;
 import seojihyun.odya.pineapple.adapters.UserAdapter;
 import seojihyun.odya.pineapple.protocol.DataManager;
+import seojihyun.odya.pineapple.protocol.NoticeData;
 import seojihyun.odya.pineapple.protocol.Protocol;
 import seojihyun.odya.pineapple.protocol.UserData;
 
@@ -72,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
     /*AR 관련 변수*/
     Button arButton;
+
+    /*notice 관련 변수*/
+    ListView noticeList;
+    NoticeAdapter noticeAdapter;
+    NoticeDialog notice;
+    View.OnClickListener noticelistener;
+
+
 
 
 
@@ -148,6 +162,11 @@ public class MainActivity extends AppCompatActivity {
         gps = new GpsInfo(MainActivity.this);
         getGps(); //********************테스트중
 
+
+
+        /**공지추가 **//////////////////////////
+        // 6. notice 탭 부분 초기화
+        initNotice();
 
         //Map 관련
         //서버간의 통신관련 변수
@@ -323,6 +342,150 @@ public class MainActivity extends AppCompatActivity {
         userAdapter.notifyDataSetChanged();
     }
 
+
+
+    /**공지추가 **//////////////////////////
+    // 4. 초기화 - notice 탭 부분
+    public void initNotice() {
+        noticeList = (ListView)findViewById(R.id.list_notice);
+        noticeAdapter = new NoticeAdapter(this,R.layout.list_notice_item, dataManager.notices);
+        noticeList.setAdapter(noticeAdapter);
+        noticeAdapter.notifyDataSetChanged();
+
+        //저장되어 있는 공지 가져오기
+        dataManager.connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", dataManager.groupData.getGroup_name());
+
+        //공지내용 불러오기 /리스너
+        noticeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                view.setBackgroundResource(R.color.dark_gray);
+                AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
+
+                /**4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경**/
+                alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    public boolean onKey(DialogInterface dialog,
+                                         int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            view.setBackgroundResource(R.color.list_gray);
+                            dialog.dismiss();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
+                /**4/30 추가: 공지내용보기 title 배경색 설정 - xml 생성**/
+                //title 만 설정
+                LayoutInflater inflater = getLayoutInflater();
+                View view1 = inflater.inflate(R.layout.dialog_notice_content, null);
+                alertDlg.setCustomTitle(view1);
+
+                //공지내용 가져오기
+                NoticeData item = dataManager.notices.get(position);
+                String content = item.getNotice_content();
+                alertDlg.setMessage(content);
+
+                alertDlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        view.setBackgroundResource(R.color.list_gray);
+                    }
+                });
+
+                alertDlg.show();
+            }
+        });
+        /**추가4/14 **/
+        //공지 삭제 (길게 눌렀을 때 삭제 다이얼로그)
+        noticeList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
+                view.setBackgroundResource(R.color.dark_gray);
+                AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
+
+                alertDlg.setTitle("공지를 삭제하시겠습니까?");
+                //서버에 보낼 공지시간, 방이름 가져오기
+                NoticeData item = dataManager.notices.get(position);
+                final String time = item.getNotice_time(); //서버에 보내
+                final String groupN = item.getNotice_groupN();
+
+                //4/29//예,아니요 위치 바꿈 //
+                alertDlg.setPositiveButton("아니요", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        view.setBackgroundResource(R.color.list_gray);
+                        dialog.dismiss();
+                    }
+                });
+                alertDlg.setNegativeButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //공지 list-item 삭제
+                        dataManager.connectURL2(Protocol.URL_DELETE_NOTICE, "", "",
+                                time, groupN);
+                        view.setBackgroundResource(R.color.list_gray);
+                    }
+                });
+
+                /**4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경**/
+                alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    public boolean onKey(DialogInterface dialog,
+                                         int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            view.setBackgroundResource(R.color.list_gray);
+                            dialog.dismiss();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                alertDlg.show();
+                return true;
+            }
+        });
+    }
+
+    //DM에서 호출
+    public NoticeAdapter getNoticeAdapter(){return noticeAdapter;}
+
+    public void dialog_notice(){
+        //2-1. 공지 리스너
+        noticelistener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(notice.getNoticeTitle().equals("") || notice.getNoticeContent().equals("")){
+                    Toast.makeText(getApplicationContext(), "제목 또는 내용을 작성하세요", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    notice.dismiss();
+                    Toast.makeText(getApplicationContext(), "제목내용 add성공", Toast.LENGTH_SHORT).show();
+                    //서버에 공지 제목,내용 ,'시간' 보내기
+                    //dataManager.noticeData.updateNotice(notice.getNoticeTitle(), notice.getNoticeContent(), notice.getNoticeTime(), dataManager.groupData.getGroup_name());
+                    dataManager.connectURL2(Protocol.URL_CREATE_NOTICE, notice.getNoticeTitle(), notice.getNoticeContent(),
+                            notice.getNoticeTime(), dataManager.groupData.getGroup_name());
+                }
+            }
+        };
+        //가이드인지 파악
+        if(dataManager.userType) {
+            //공지 입력 다이얼로그
+            notice = new NoticeDialog(MainActivity.this, 1, noticelistener);
+            notice.show(); //다이얼로그 호출
+        }
+        else{ //작성할수 없다 공지 띄우고 끝
+            NoticeDialog notice2 = new NoticeDialog(MainActivity.this, 0);
+            notice2.show(); //다이얼로그 호출
+        }
+    }
+
+
+
+
+
+
+
     // MAP Fragment 관련 메소드
     // 1. setting
     private void setUpMapIfNeeded() {
@@ -356,6 +519,9 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.button_map_setting:
                 getGps();
+                break;
+            case R.id.button_create_notice:
+                dialog_notice();
                 break;
         }
     }
@@ -518,6 +684,9 @@ public class MainActivity extends AppCompatActivity {
 
         //데이터가 변했을때 호출
         userAdapter.notifyDataSetChanged();
+
+        /**공지추가 **//////////////////////////
+        noticeAdapter.notifyDataSetChanged();
     }
 
 

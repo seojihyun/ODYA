@@ -145,11 +145,23 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
-                            <TextView
+                            <ListView
+                                android:id="@+id/list_notice"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#cccc"
+                                android:choiceMode="singleChoice"
+                                android:divider="@android:color/transparent"
+                                android:dividerHeight="1dp"></ListView>
+                            <Button
+                                android:id="@+id/button_create_notice"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="New Text"
-                                android:id="@+id/textView4" />
+                                android:layout_marginBottom="10dp" android:layout_marginRight="10dp"
+                                android:text="+"
+                                android:layout_alignParentBottom="true" android:layout_alignParentRight="true"
+                                android:onClick="onClick"/>
+
                         </LinearLayout>
                     </FrameLayout>
                 </LinearLayout>

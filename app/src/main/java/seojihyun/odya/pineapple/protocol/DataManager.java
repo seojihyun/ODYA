@@ -29,6 +29,7 @@ import seojihyun.odya.pineapple.activities.MainActivity;
 import seojihyun.odya.pineapple.activities.SignUpActivity;
 import seojihyun.odya.pineapple.activities.GrouplistActivity;
 import seojihyun.odya.pineapple.activities.LoginActivity;
+import seojihyun.odya.pineapple.adapters.NoticeAdapter;
 
 /**
  * Created by SEOJIHYUN on 2016-02-17.
@@ -42,6 +43,12 @@ public class DataManager extends Application {
     private String data; //서버로부터 받은 메세지 (프로토콜)
     private Activity activity; //현재 실행중인 액티비티
     private BackgroundActivity backgroundActivity=null;
+
+    /**공지추가 **//////////////////////////
+    public NoticeData noticeData; //현재 사용자가 입장한 그룹 방의 공지 ?
+    public Vector<NoticeData> notices = new Vector<NoticeData>(); //현재 서버에 존재하는 모든 공지 정보
+    public NoticeAdapter nAdapter;
+
 
     public DataManager() {}
 
@@ -110,6 +117,7 @@ public class DataManager extends Application {
         super.onCreate();
         userData = new UserData();
         groupData = new GroupData();
+        noticeData = new NoticeData();
     }
 
     @Override
@@ -330,6 +338,93 @@ public class DataManager extends Application {
     }
 
 
+
+    /**공지추가 **//////////////////////////
+    public void connectURL2(String... params) {
+        class GetDataJSON2 extends AsyncTask<String, Void, String> {
+            ProgressDialog dialog;
+            /**추가3/31: group_name="" **/
+            String uri="", notice_title="", notice_content="", notice_time="", group_name="";
+
+            @Override
+            protected String doInBackground(String... params) {
+                try {
+                    uri = params[0];
+                    notice_title = params[1];
+                    notice_content  = params[2];
+                    notice_time = params[3];
+                    group_name = params[4]; /**추가3/31 **/
+
+                    BufferedReader bufferedReader = null;
+
+                    String sendData = URLEncoder.encode("notice_title", "UTF-8") + "=" + URLEncoder.encode(notice_title, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("notice_content", "UTF-8") + "=" + URLEncoder.encode(notice_content, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("notice_time", "UTF-8") + "=" + URLEncoder.encode(notice_time, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("group_name", "UTF-8") + "=" + URLEncoder.encode(group_name, "UTF-8");
+
+                    URL url = new URL(uri);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                    // 서버로 메세지 전송
+                    con.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+
+                    wr.write(sendData);
+                    wr.flush();
+
+
+                    // 서버로부터 데이터 수신
+                    StringBuilder sb = new StringBuilder();
+
+                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        sb.append(json + "\n");
+                    }
+
+                    return sb.toString().trim();
+
+                } catch (Exception e) {
+                    return null;
+                }
+
+
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                data = result;
+                getMessage(data);
+            }
+
+            @Override
+            protected void onPreExecute() {
+                //dialog = ProgressDialog.show(activity, "잠시만 기다려주세요", null, true, true);
+            }
+        }
+
+        String url = params[0];
+        String notice_title = params[1];
+        String notice_content = params[2];
+        String notice_time = params[3];
+        String group_name = params[4];
+
+        //noticeData update
+        noticeData.updateNotice(notice_title, notice_content, notice_time, group_name);
+
+        //Task 실행
+        GetDataJSON2 g = new GetDataJSON2();
+        g.execute(url, notice_title, notice_content, notice_time, group_name);
+    }
+
+
+
+
+
+
+
+
     //서버로부터 받은 JSON 객체 디코딩 - (1) Message 로 Task 분류
     // 서버로부터 메세지 받은후의 작업
     public void getMessage(String data) {
@@ -498,6 +593,69 @@ public class DataManager extends Application {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+                    break;
+
+                /**공지추가 **///////////////////////////////////////////////////////////////////////
+                case Protocol.MESSAGE_CREATE_NOTICE:
+                    if (Protocol.RESULT_SUCCESS.equals(result)) {
+                        if( !activity.getClass().getSimpleName().equals("MainActivity")) { break; }
+                        Toast.makeText(activity, "공지생성 성공", Toast.LENGTH_SHORT).show();
+                        connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", groupData.getGroup_name());
+
+                    } else {
+                        Toast.makeText(activity, "공지생성 실패", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case Protocol.MESSAGE_GET_MY_NOTICE_DATA:
+                    if (Protocol.RESULT_SUCCESS.equals(result)) {
+                        Toast.makeText(activity, "공지받기 성공", Toast.LENGTH_SHORT).show();
+                        Context context = activity;
+                        MainActivity mainActivity = (MainActivity)context;
+                        //notice 받기
+                        notices.removeAllElements();
+                        try {
+                            JSONArray array_notice = jsonObj.getJSONArray(Protocol.KEY_ARRAY_NOTICE);
+
+                            for (int i = 0; i < array_notice.length(); i++) {
+                                JSONObject c = array_notice.getJSONObject(i);
+                                String notice_title = c.getString(Protocol.KEY_NOTICE_TITLE);
+                                String notice_content = c.getString(Protocol.KEY_NOTICE_CONTENT);
+                                String notice_time = c.getString(Protocol.KEY_NOTICE_TIME);
+                                String notice_group_name = c.getString(Protocol.KEY_NOTICE_GROUP_NAME);
+                                //notices 추가
+                                notices.add(new NoticeData(notice_title, notice_content, notice_time, notice_group_name));
+//                                nAdapter = mainActivity.getNoticeAdapter();
+//                                nAdapter.notifyDataSetChanged();
+
+                                /**4/30추가 : 공지변경시 그룹원들 위치 10초주기
+                                 for(int k=0; k<users.size(); k++){
+                                 //방 안에 있는 그룹원들의 위치만 다시 받기 (그룹이름 같으면)
+                                 if(groupData.getGroup_name().equals(users.get(k).getGroup_name())){
+                                 users.get(k).getGPS(activity);
+                                 }
+                                 } **/
+                            }
+                            nAdapter = mainActivity.getNoticeAdapter();
+                            nAdapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        Toast.makeText(activity, "공지받기 실패", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                /**추가4/14 **/
+                case Protocol.MESSAGE_DELETE_NOTICE:
+                    if (Protocol.RESULT_SUCCESS.equals(result)) {
+                        if( !activity.getClass().getSimpleName().equals("MainActivity")) { break; }
+                        Toast.makeText(activity, "공지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", groupData.getGroup_name());
+
+                    } else {
+                        Toast.makeText(activity, "공지삭제 실패", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

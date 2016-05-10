@@ -68,8 +68,29 @@ public class Protocol {
     public static final String URL_AR_GET_USER_LOCATION = Protocol.URL + "ar_getuserLocation.php";
     public static final String URL_AR_GET_ALL_USER_LOCATION = Protocol.URL + "ar_getalluserlocation.php";
 
+
+
+    /**양해은**/
+    public static final String URL_CREATE_NOTICE = Protocol.URL + "createnotice.php";
+    public static final String URL_GET_ALL_NOTICE_DATA = Protocol.URL + "getallnoticedata.php";
+    public static final String URL_DELETE_NOTICE = Protocol.URL + "deletenotice.php";
+    public static final String MESSAGE_CREATE_NOTICE="14";
+    public static final String MESSAGE_GET_MY_NOTICE_DATA="15";
+    public static final String MESSAGE_DELETE_NOTICE="16";
+
+    //
+
     /* Client측에서 해결하는 Task*/
     //static final String URL_CHECK_GROUP_PWD="CHECK_GROUP_PWD";
+
+
+    /*양해은*/
+    /**추가 notice**/
+    public static final String KEY_NOTICE_TITLE = "title";
+    public static final String KEY_NOTICE_CONTENT = "content";
+    public static final String KEY_NOTICE_TIME = "time";
+    public static final String KEY_ARRAY_NOTICE = "array2";
+    public static final String KEY_NOTICE_GROUP_NAME = "group_name";
 
 }
 

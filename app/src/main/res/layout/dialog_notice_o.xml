@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:orientation="vertical"
+    android:layout_width="wrap_content" android:layout_height="400dp"
+    android:background="#ededed">
+
+    <!-- title layout-->
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent" android:layout_height="55dp"
+        android:background="@color/green"
+        >
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"  android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="공지사항 글 작성" android:textColor="#ffffff"
+            android:textSize="20sp" android:textStyle="bold">
+        </TextView>
+    </LinearLayout>
+
+    <!-- 공지 제목 layout-->
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:padding="10dp" android:orientation="horizontal"
+        android:background="@android:color/darker_gray">
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_width="wrap_content"  android:layout_height="wrap_content"
+            android:text="제목 : "
+            android:textColor="#000000"
+            android:textSize="16sp">
+        </TextView>
+        <EditText
+            android:id="@+id/edit_title"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:inputType="text"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:hint="공지 제목"
+
+            android:background="@null"/>
+    </LinearLayout>
+
+
+    <!-- 공지 내용 layout-->
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_below="@+id/layout1" android:padding="10dp"
+        android:text="공지 내용 : "
+        android:textColor="#000000"
+        android:textSize="16sp">
+    </TextView>
+    <ScrollView
+        android:id="@+id/layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView02"
+        android:layout_above="@+id/layout3"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        android:paddingLeft="10dp" android:paddingRight="10dp">
+        <EditText
+            android:id="@+id/edit_content"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:hint="내용 작성하기"
+            android:lineSpacingExtra="5dp"
+            android:background="@null"
+
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+
+            />
+    </ScrollView>
+
+
+    <!-- 확인, 취소 layout-->
+    <LinearLayout
+        android:id="@+id/layout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+        <Button
+            android:id="@+id/btn_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="확인"/>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="취소"/>
+    </LinearLayout>
+
+</RelativeLayout>
