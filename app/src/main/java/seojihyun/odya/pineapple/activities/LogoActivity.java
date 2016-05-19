@@ -6,6 +6,7 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.ImageView;
 
+import seojihyun.odya.pineapple.data.LoginSharedPreferences;
 import seojihyun.odya.pineapple.protocol.DataManager;
 import seojihyun.odya.pineapple.protocol.Protocol;
 import seojihyun.odya.pineapple.R;
@@ -33,8 +34,39 @@ public class LogoActivity extends AppCompatActivity {
        // a.setOnClickListener(this);
         //User정보 존재 여부 확인 - phone 번호로 조회
     }
-
     public void onClick(View v) {
+        try {// checkID 를 위한 단말기 전화번호 얻어오기
+            //TelephonyManager telManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+            //user_phone = telManager.getLine1Number();
+
+
+            // 서버로부터 checkID
+            //dataManager.command(Protocol.URL_CHECK_USER, user_phone, "", "", "", "");
+
+            /* 자동 로그인 */
+            // 1. 로그인 여부 확인
+            if(LoginSharedPreferences.isLogin(this)) {
+                String user_phone = LoginSharedPreferences.getPreferences(this, getString(R.string.user_phone));
+                String user_name = LoginSharedPreferences.getPreferences(this, getString(R.string.user_name));
+                    dataManager.userData.updateUserData(user_phone, user_name, "", "", "");
+                    dataManager.command(Protocol.URL_LOGIN, user_phone, user_name, "", "", "");
+                   // dataManager.connectURL(Protocol.URL_GET_ALL_GROUP_DATA, dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), dataManager.userData.getLatitude(), dataManager.userData.getLongitude(), dataManager.userData.getGroup_name());
+
+
+            } else {
+                TelephonyManager telManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+                user_phone = telManager.getLine1Number();
+                if (user_phone == null) {
+                    user_phone = "";
+                }
+                dataManager.command(Protocol.URL_CHECK_USER, user_phone, "", "", "", "");
+            }
+        } catch(Exception e) {
+
+        }
+    }
+
+/*    public void onClick(View v) {
         try {// checkID 를 위한 단말기 전화번호 얻어오기
             TelephonyManager telManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
             user_phone = telManager.getLine1Number();
@@ -54,5 +86,5 @@ public class LogoActivity extends AppCompatActivity {
 
         }
     }
-
+*/
 }

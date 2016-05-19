@@ -28,11 +28,13 @@ import java.net.URLEncoder;
 import java.util.Vector;
 
 import seojihyun.odya.pineapple.BackgroundActivity;
+import seojihyun.odya.pineapple.R;
 import seojihyun.odya.pineapple.activities.MainActivity;
 import seojihyun.odya.pineapple.activities.SignUpActivity;
 import seojihyun.odya.pineapple.activities.GrouplistActivity;
 import seojihyun.odya.pineapple.activities.LoginActivity;
 import seojihyun.odya.pineapple.adapters.NoticeAdapter;
+import seojihyun.odya.pineapple.data.LoginSharedPreferences;
 
 /**
  * Created by SEOJIHYUN on 2016-02-17.
@@ -212,6 +214,9 @@ public class DataManager extends Application {
                     connectURL(params);
                     break;
                 case Protocol.URL_GET_MY_GROUP_USERS_DATA:
+                    connectURL(params);
+                    break;
+                case Protocol.URL_ENTER_Group:
                     connectURL(params);
                     break;
                 case Protocol.URL_EXIT_GROUP:
@@ -555,6 +560,7 @@ public class DataManager extends Application {
                 case Protocol.MESSAGE_LOGIN: //3 :LOGIN ACTIVITY 에서 로그인 성공여부(RESULT)
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
                         Toast.makeText(activity, "로그인 성공", Toast.LENGTH_SHORT).show();
+                        LoginSharedPreferences.setLogin(activity, userData.getUser_phone(), userData.getUser_name()); //2016-05-19 자동 로그인 - 서지현
                         //changeActivity("MapActivity");//*************************Test중***************
                         /////////0503////////////connectURL(Protocol.URL_GET_ALL_GROUP_DATA, userData.getUser_phone(), userData.getUser_name(), userData.getLatitude(), userData.getLongitude(), userData.getGroup_name());
                         changeActivity("BackgroundActivity");
@@ -616,8 +622,17 @@ public class DataManager extends Application {
                                 groups.add(new GroupData(group_name, group_pwd, number, user_phone, user_name));
 
                             }//end for
-
-                            changeActivity("GrouplistActivity");
+                            if(LoginSharedPreferences.isGroup(activity)) {
+                                String user_phone = LoginSharedPreferences.getPreferences(this, getString(R.string.user_phone));
+                                String user_name = LoginSharedPreferences.getPreferences(this, getString(R.string.user_name));
+                                String group_name = LoginSharedPreferences.getPreferences(this, getString(R.string.group_name));
+                                userData.updateUserData(user_phone, user_name, "", "", group_name);
+                                connectURL(Protocol.URL_ENTER_Group, user_phone,
+                                        user_name, userData.getLatitude(), userData.getLongitude(), group_name);
+                            }
+                            else {
+                                changeActivity("GrouplistActivity");
+                            }
                             Toast.makeText(activity, "그룹 정보받기 성공", Toast.LENGTH_SHORT).show();
 
                         } catch (JSONException e) {
@@ -628,6 +643,8 @@ public class DataManager extends Application {
                 case Protocol.MESSAGE_ENTER_GROUP:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
                         Toast.makeText(activity, "그룹 입장 성공", Toast.LENGTH_SHORT).show();
+                        LoginSharedPreferences.enterGroup(activity, userData.getGroup_name()); //2016-05-19 자동 로그인 - 서지현
+
                         //2016-03-06 테스트
                         setUserType();
                         //*********
@@ -640,6 +657,7 @@ public class DataManager extends Application {
                 case Protocol.MESSAGE_CREATE_GROUP:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
                         Toast.makeText(activity, "그룹 생성 성공", Toast.LENGTH_SHORT).show();
+                        LoginSharedPreferences.enterGroup(activity, userData.getGroup_name()); //2016-05-19 자동 로그인 - 서지현
                         // 2016-03-06 테스트
                         setUserType(); //가이드로 설정
                         //******
@@ -654,7 +672,7 @@ public class DataManager extends Application {
                         //2016-03-06 테스트중
                         Toast.makeText(activity, "그룹 나가기 성공", Toast.LENGTH_SHORT).show();
                         // GpsInfo 종료
-
+                        LoginSharedPreferences.exitGroup(activity); //2016-05-19 자동 로그인 - 서지현
                         //GroupList화면으로 이동
                         changeActivity("GrouplistActivity");
                     }else {

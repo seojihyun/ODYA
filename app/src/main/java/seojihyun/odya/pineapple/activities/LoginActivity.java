@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import seojihyun.odya.pineapple.data.LoginSharedPreferences;
 import seojihyun.odya.pineapple.protocol.DataManager;
 import seojihyun.odya.pineapple.protocol.Protocol;
 import seojihyun.odya.pineapple.R;

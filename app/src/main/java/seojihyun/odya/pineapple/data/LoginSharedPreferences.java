@@ -8,6 +8,7 @@ import seojihyun.odya.pineapple.R;
 
 /**
  * Created by SEOJIHYUN on 2016-05-15.
+ * **Auto Login Service**
  */
 public class LoginSharedPreferences {
     // 1. 로그인
@@ -17,7 +18,7 @@ public class LoginSharedPreferences {
         editor.putString(ctx.getString(R.string.user_name), userName);
         editor.commit();
     }
-
+    //  로그아웃
     public static void logout(Activity ctx) {
         SharedPreferences.Editor editor = ctx.getSharedPreferences("info", Context.MODE_PRIVATE).edit();
         editor.putString(ctx.getString(R.string.user_phone), "");
@@ -25,24 +26,26 @@ public class LoginSharedPreferences {
         editor.commit();
     }
 
+    //  로그인 여부
     public static boolean isLogin(Activity ctx) {
         return (ctx.getSharedPreferences("info", Context.MODE_PRIVATE).getString(ctx.getString(R.string.user_name), "") != "" && ctx.getSharedPreferences("info", Context.MODE_PRIVATE).getString(ctx.getString(R.string.user_phone), "") != "");
     }
 
 
-    // 2. 그룹
+    // 2. 그룹 입장
     public static void enterGroup(Activity ctx, String groupName) {
         SharedPreferences.Editor editor = ctx.getSharedPreferences("info", Context.MODE_PRIVATE).edit();
         editor.putString(ctx.getString(R.string.group_name), groupName);
         editor.commit();
     }
 
+    // 그룹 퇴장
     public static void exitGroup(Activity ctx) {
         SharedPreferences.Editor editor = ctx.getSharedPreferences("info", Context.MODE_PRIVATE).edit();
         editor.putString(ctx.getString(R.string.group_name), "");
         editor.commit();
     }
-
+    // 그룹 입장 여부
     public static boolean isGroup(Activity ctx) { //그룹 입장 여부
         return (ctx.getSharedPreferences("info", Context.MODE_PRIVATE).getString(ctx.getString(R.string.group_name), "") != "" );
     }
