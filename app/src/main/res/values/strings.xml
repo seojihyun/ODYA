@@ -1,8 +1,16 @@
 <resources>
-    <string name="app_name">ODYA</string>
+    <string name="app_name">파인애플</string>
     <string name="title_activity_logo">LogoAcitivity</string>
     <string name="title_activity_maps">Map</string>
 
+    <!-- 자동 로그인 관련 -->
+    <string name="info_file">info</string>
+    <string name="user_name">user_name</string>
+    <string name="user_phone">user_phone</string>
+    <string name="group_name">group_name</string>
+
+    <!-- UI TEXT -->
+    <string name="alert_password">*비밀번호를 입력해주세요</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
@@ -40,9 +48,6 @@
     <string name="setting_string">Setting</string>
     <string name="closeDrawer">Navigation View</string>
     <string name="openDrawer">Navigation View Closed</string>
-
-
-
 
 
     <string name="search_hint">Search Location</string>
@@ -123,5 +128,8 @@
     <string name="search_active_2">. Touch to terminate search</string>
     <string name="download_error">Error while downloading</string>
     <string name="download_received">Received data from</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

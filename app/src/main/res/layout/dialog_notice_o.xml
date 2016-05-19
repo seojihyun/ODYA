@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/title"
         android:layout_width="match_parent" android:layout_height="55dp"
-        android:background="@color/green"
+        android:background="#00a697"
         >
         <TextView
             android:id="@+id/text_title"
@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/TextView01"
             android:layout_width="wrap_content"  android:layout_height="wrap_content"
-            android:text="제목 : "
+            android:text="공지 제목 : "
             android:textColor="#000000"
             android:textSize="16sp">
         </TextView>
@@ -96,13 +96,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="확인"/>
+            android:text="확인"
+            android:background="@color/material_blue_grey_800"
+            android:textColor="#ffffff"
+            android:layout_margin="5dp" />
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="취소"/>
+            android:text="취소"
+            android:background="@color/material_blue_grey_800"
+            android:textColor="#ffffff"
+            android:layout_margin="5dp" />
     </LinearLayout>
 
 </RelativeLayout>

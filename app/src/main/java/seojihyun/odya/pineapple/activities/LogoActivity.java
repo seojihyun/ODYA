@@ -10,7 +10,7 @@ import seojihyun.odya.pineapple.protocol.DataManager;
 import seojihyun.odya.pineapple.protocol.Protocol;
 import seojihyun.odya.pineapple.R;
 
-public class LogoActivity extends AppCompatActivity implements View.OnClickListener {
+public class LogoActivity extends AppCompatActivity {
 
     private DataManager dataManager;
     private String user_phone;
@@ -30,27 +30,29 @@ public class LogoActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // 리스너 부착
-        a.setOnClickListener(this);
+       // a.setOnClickListener(this);
         //User정보 존재 여부 확인 - phone 번호로 조회
     }
-    @Override
+
     public void onClick(View v) {
-        // checkID 를 위한 단말기 전화번호 얻어오기
-        TelephonyManager telManager = (TelephonyManager)getSystemService(this.TELEPHONY_SERVICE);
-        user_phone = telManager.getLine1Number();
+        try {// checkID 를 위한 단말기 전화번호 얻어오기
+            TelephonyManager telManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+            user_phone = telManager.getLine1Number();
 
-        // (1) Usim이 없거나 단말기 전화번호 얻어오지 못한 경우
-        if(user_phone == null) {
-            user_phone="";
+
+            // (1) Usim이 없거나 단말기 전화번호 얻어오지 못한 경우
+            if (user_phone == null) {
+                user_phone = " ";
+            }
+
+            // 서버로부터 checkID
+            dataManager.command(Protocol.URL_CHECK_USER, user_phone, "", "", "", "");
+            //***********2014-04-13 끝
+            // 서버로부터 checkID
+            //userManager.connectURL(Protocol.URL_CHECK_USER, user_phone, "", "", "", "");
+        } catch(Exception e) {
+
         }
-
-        // 서버로부터 checkID
-        dataManager.command(Protocol.URL_CHECK_USER, user_phone, "", "", "", "");
-
-        //***********2014-04-13 끝
-        // 서버로부터 checkID
-        //userManager.connectURL(Protocol.URL_CHECK_USER, user_phone, "", "", "", "");
-
     }
 
 }

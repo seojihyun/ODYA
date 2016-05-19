@@ -44,9 +44,12 @@ import javax.net.ssl.X509TrustManager;
 
 import seojihyun.odya.pineapple.ar.data.DataSource;
 import seojihyun.odya.pineapple.ar.render.Matrix;
+import seojihyun.odya.pineapple.protocol.DataManager;
 
 // 컨텍스트랩퍼를 확장하는 컨텍스트 클래스
 public class MixContext extends ContextWrapper {
+
+    DataManager dataManager;
 
     // 뷰와 컨텍스트
     public MixView mixView;
@@ -72,6 +75,10 @@ public class MixContext extends ContextWrapper {
     // 생성자. 어플리케이션의 컨텍스트를 받는다
     public MixContext(Context appCtx) {
         super(appCtx);
+
+        //2016-05-11 dataManager
+        dataManager = (DataManager)appCtx.getApplicationContext();
+        //dataManager.setActivity(appCtx);
 
         // 메인 뷰와 컨텍스트를 할당
         this.mixView = (MixView) appCtx;
@@ -446,7 +453,7 @@ public class MixContext extends ContextWrapper {
     */
         //서지현 추가
         // 다이얼로그를 생성
-        UserInfoDialog d = new UserInfoDialog(mixView, marker);
+        UserInfoDialog d = new UserInfoDialog(mixView, marker, dataManager); //2016-05-12
 
         d.show();	// 다이얼로그 출력
 

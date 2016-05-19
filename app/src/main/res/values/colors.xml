@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3a95f7</color>
-    <color name="colorPrimaryDark">#3a95f7</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark">#48d1cc</color>
+    <color name="colorAccent">#eb9073</color>
+    <color name="findappleBase">#48d1cc</color>
 
-
-    <color name="PrimaryColor">#FFBDBDBD</color>
+    <color name="PrimaryColor">#bdbdbd</color>
     <color name="PrimaryDarkColor">#FFA5A5A5</color>
-    <color name="dark_gray">#60A1A1A1</color>
+    <color name="dark_gray">#60a1a1a1</color>
     <color name="list_gray">#dbdbdb</color>
-    <color name="green">#15AB6F</color>
+    <color name="green">#80cbc4</color>
+
+    <!-- Style.xml 부분-->
+    <color name="app_primary">#80cbc4</color>
+    <color name="app_primary_dark">#009688</color>
+    <color name="grey">#DDDDDD</color>
+    <color name="light_grey">#EEEEEE</color>
+    <color name="white_transparent">#99FFFFFF</color>
+    <color name="black">#ffffff</color>
 </resources>

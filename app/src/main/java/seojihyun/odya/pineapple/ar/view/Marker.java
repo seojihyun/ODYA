@@ -249,7 +249,11 @@ abstract public class Marker implements Comparable<Marker> {
             double radius = Math.max(Math.min(angle/0.44 * maxHeight, maxHeight),maxHeight/25f);
             //double radius = angle/0.44d * (double)maxHeight;
 
-            dw.paintCircle(cMarker.x, cMarker.y, (float)radius);
+            //서지현 추가 - 원크기 조절 안하는 테스트
+            dw.paintCircle(cMarker.x, cMarker.y, (float)50);
+
+            //서지현 삭제
+            //dw.paintCircle(cMarker.x, cMarker.y, (float)radius);
         }
     }
 

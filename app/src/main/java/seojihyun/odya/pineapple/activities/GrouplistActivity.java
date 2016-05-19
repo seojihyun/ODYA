@@ -140,6 +140,7 @@ public class GrouplistActivity extends AppCompatActivity {
                 // 2 userData와 groupData update ********수정 필요함
                 // dataManager측 데이터 수정
                 dataManager.userData.setGroup_name(createGroupDialog.getGroupName());
+
                 dataManager.groupData.updateGroup(createGroupDialog.getGroupName(), createGroupDialog.getPwd(), "1", userData.getUser_phone(), userData.getUser_name());
                 dataManager.groups.add(new GroupData(createGroupDialog.getGroupName(), createGroupDialog.getPwd(), "1", userData.getUser_phone(), userData.getUser_name()));
 

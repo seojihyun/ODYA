@@ -100,6 +100,9 @@ public class NoticeDialog extends Dialog{
                 //alertCheck(); 작성했던 내용 취소 됩니다.// -> 거기서 dismiss();
                 dismiss();
             }
+
+
+
         });
     }
 

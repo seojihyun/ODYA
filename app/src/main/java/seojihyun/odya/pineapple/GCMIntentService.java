@@ -6,7 +6,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -52,11 +55,43 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message");
-        String message = intent.getExtras().getString("price");
+        dataManager = (DataManager) context.getApplicationContext();
+        String message = intent.getExtras().getString("price"); //기본
+        String sos =  intent.getExtras().getString("sos"); //sos
+        String destination = intent.getExtras().getString("destination"); //destination
+        String notice = intent.getExtras().getString("notice"); // notice 일반 공지
+        String user = intent.getExtras().getString("user"); // user update
 
-        displayMessage(context, message);
-        // notifies user
-        generateNotification(context, message);
+
+        // 2016-05-17 메세지 분류
+        if(message != null) {
+            displayMessage(context, message);
+            // notifies user
+            generateNotification(context, message);
+        }
+        if(sos != null) {
+            // 서지현
+            Intent i = new Intent(context, SOSActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra("message", sos);
+            context.startActivity(i);
+
+            displayMessage(context, sos);
+            // notifies user
+            generateNotification(context, sos);
+            return;
+        }
+        if(destination != null) {
+            displayMessage(context, destination);
+            // notifies user
+            generateNotification(context, destination);
+        }
+        if(notice != null) {
+            displayMessage(context, notice);
+            // notifies user
+            generateNotification(context, notice);
+        }
+
     }
 
     /**
@@ -91,9 +126,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     /**
      * Issues a notification to inform the user that server has sent a message.
+     * 알림 아이콘 설정
      */
     private static void generateNotification(Context context, String message) {
-        int icon = R.drawable.cast_ic_notification_on;
+        int icon = R.drawable.icon;
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);

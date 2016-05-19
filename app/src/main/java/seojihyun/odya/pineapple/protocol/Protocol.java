@@ -22,6 +22,10 @@ public class Protocol {
     public static final String KEY_GROUP_NAME = "group_name";
     public static final String KEY_GROUP_PWD = "group_pwd";
     public static final String KEY_NUMBER = "number";
+    /*Destination*/
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_CONTENT = "content";
+    public static final String KEY_TIMESET="timeset";
 
 
     // KEY_MESSAGE 의 value 관련 프로토콜
@@ -38,6 +42,7 @@ public class Protocol {
     public static final String MESSAGE_CHECK_GROUP_PWD="11"; //*********테스트중
     public static final String MESSAGE_GET_MY_GROUP_USERS_DATA="12";
     public static final String MESSAGE_EXIT_GROUP="13";
+
 
 
     // KEY_RESULT 의 value 관련 프로토콜
@@ -77,6 +82,14 @@ public class Protocol {
     public static final String MESSAGE_CREATE_NOTICE="14";
     public static final String MESSAGE_GET_MY_NOTICE_DATA="15";
     public static final String MESSAGE_DELETE_NOTICE="16";
+
+    /*Destination*/
+
+    public static final String URL_CREATE_DESTINATION = Protocol.URL + "createdestination.php";
+    public static final String URL_GET_DESTINATION_DATA = Protocol.URL + "getdestinationdata.php";
+    public static final String MESSAGE_CREATE_DESTINATION = "100";
+    public static final String MESSAGE_GET_DESTINATION_DATA = "101";
+
 
     //
 

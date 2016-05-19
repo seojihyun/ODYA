@@ -1,8 +1,13 @@
 package seojihyun.odya.pineapple.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +27,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -30,11 +36,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import seojihyun.odya.pineapple.SOSActivity;
+import seojihyun.odya.pineapple.SharedPreferencesManager;
+import seojihyun.odya.pineapple.WakeLocker;
 import seojihyun.odya.pineapple.adapters.NoticeAdapter;
 import seojihyun.odya.pineapple.ar.view.MixView;
 import seojihyun.odya.pineapple.dialogs.NoticeDialog;
+import seojihyun.odya.pineapple.protocol.DestinationData;
 import seojihyun.odya.pineapple.protocol.GpsInfo;
 import seojihyun.odya.pineapple.R;
 import seojihyun.odya.pineapple.adapters.UserAdapter;
@@ -42,6 +53,8 @@ import seojihyun.odya.pineapple.protocol.DataManager;
 import seojihyun.odya.pineapple.protocol.NoticeData;
 import seojihyun.odya.pineapple.protocol.Protocol;
 import seojihyun.odya.pineapple.protocol.UserData;
+
+import static seojihyun.odya.pineapple.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     /* list 관련 변수*/
     private ListView userList;
     private UserData selectedUser;
-    private UserAdapter userAdapter, userAdapter1;
+    private UserAdapter userAdapter;
 
     /*infowindow 관련 변수*/
     HashMap<Marker, UserData> mMarkersHashMap; //마커를 통해 UserData find
@@ -83,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
     NoticeDialog notice;
     View.OnClickListener noticelistener;
 
+    /*Destination 관련 변수*/
+    MarkerOptions destinationMarker;
 
 
 
@@ -94,6 +109,77 @@ public class MainActivity extends AppCompatActivity {
     * 4. HashMap에 모두 add
     * 5. mMap.setInfowindowAdapter(new Adapter());
     * 6. marker.showinfowindow();*/
+    /**
+     * Receiving push messages
+     * */
+    private  BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String newMessage = intent.getExtras().getString("message");
+            // Waking up mobile if it is sleeping
+            WakeLocker.acquire(getApplicationContext());
+
+            /**
+             * Take appropriate action on this message
+             * depending upon your app requirement
+             * For now i am just displaying it on the screen
+             * */
+
+            // Showing received message
+            //lblMessage.append(newMessage + "\n");
+            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+
+            String message = intent.getExtras().getString("price"); //기본
+            String sos =  intent.getExtras().getString("sos"); //sos
+            String destination = intent.getExtras().getString("destination"); //destination
+            String notice = intent.getExtras().getString("notice"); // notice 일반 공지
+            String user = intent.getExtras().getString("user"); // user update
+
+
+            // 2016-05-17 메세지 분류
+
+            if(sos != null) {
+                // 서지현
+                Intent i = new Intent(context, SOSActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra("message", sos);
+                context.startActivity(i);
+
+                return;
+            }
+            if(newMessage.equals("destination")) {
+                getDestination();
+
+                return;
+
+            }
+            if(newMessage.equals("notice")) {
+                initNotice(); //2016-05-19
+                return;
+            }
+
+
+            // Releasing wake lock
+            WakeLocker.release();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        try {
+            unregisterReceiver(mHandleMessageReceiver);
+            GCMRegistrar.onDestroy(this);
+        } catch (Exception e) {
+            //Log.e("UnRegister Receiver Error", "> " + e.getMessage());
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dataManager.setActivity(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +188,14 @@ public class MainActivity extends AppCompatActivity {
         // 0.UserManager 객체 얻기
         dataManager = (DataManager) getApplicationContext();
         dataManager.setActivity(this);
+
+        registerReceiver(mHandleMessageReceiver, new IntentFilter(
+                DISPLAY_MESSAGE_ACTION));
+
+
+
+
+
 
         if (dataManager.userType) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -163,12 +257,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         /**공지추가 **//////////////////////////
-        // 6. notice 탭 부분 초기화
+        // 4. notice 탭 부분 초기화
         initNotice();
-
         //Map 관련
         //서버간의 통신관련 변수
 
+        initDestination();
 
 
 
@@ -181,6 +275,8 @@ public class MainActivity extends AppCompatActivity {
         mMap.setInfoWindowAdapter(mMapInfoWindowAdapter);
 
     }
+
+
 
 
     // 1. 초기화 - 탭호스트부분
@@ -218,18 +314,22 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
+        /* 2016-05-16 서지현
         // 네비게이션 드로어 안에 user List 부착
         userListDrawer = (ListView) findViewById(R.id.navigation_list);
 
         userAdapter = new UserAdapter(this, R.layout.item_user, dataManager.users, dataManager); //서지현
-        userListDrawer.setAdapter(userAdapter);
+        userListDrawer.setAdapter(userAdapter); 삭제
         //데이터가 변했을때 호출
         userAdapter.notifyDataSetChanged();
-
+        */
         ////////
 
-        TextView user_name = (TextView) findViewById(R.id.user_name);
-        TextView user_phone = (TextView) findViewById(R.id.user_phone);
+        //View header = LayoutInflater.from(this).inflate(R.layout.header, null); 2016-05-15 서지현 네비게이션 헤더 부분 수정 삭제
+        //navigationView.addHeaderView(header);
+
+        TextView user_name = (TextView) findViewById(R.id.header_user_name);
+        TextView user_phone = (TextView)findViewById(R.id.header_user_phone);
 
         user_name.setText(dataManager.userData.getUser_name());
         user_phone.setText(dataManager.userData.getUser_phone());
@@ -251,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
-                    /*
+
                     case R.id.navigation_item_home:
                         Toast.makeText(getApplicationContext(), "Home Selected", Toast.LENGTH_SHORT).show();
                         return true;
@@ -261,10 +361,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_item_setting:
                         Toast.makeText(getApplicationContext(), "setting Selected", Toast.LENGTH_SHORT).show();
                         return true;
-                    case R.id.navigation_item_help:
-                        Toast.makeText(getApplicationContext(), "help Selected", Toast.LENGTH_SHORT).show();
-                        return true;
-                        */
+
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     //case R.id.inbox:
                     //Toast.makeText(getApplicationContext(),"Inbox Selected",Toast.LENGTH_SHORT).show();
@@ -333,14 +430,12 @@ public class MainActivity extends AppCompatActivity {
     public void initList() {
         //list 관련
         userList = (ListView) findViewById(R.id.list_user);
-
+        userAdapter = new UserAdapter(this, R.layout.item_user, dataManager.users, dataManager); //2016-05-16 서지현 추가
         //userAdapter = new UserAdapter(this, R.layout.list_user_item, dataManager.users); // 2016-03-28 어뎁터 하나로 사용 - 테스트중 _ 서지현
         userList.setAdapter(userAdapter);
         //데이터가 변했을때 호출
         userAdapter.notifyDataSetChanged();
     }
-
-
 
     /**공지추가 **//////////////////////////
     // 4. 초기화 - notice 탭 부분
@@ -401,46 +496,72 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
                 view.setBackgroundResource(R.color.dark_gray);
-                AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
+                /**5/12 추가 - 가이드만 삭제**/
+                if(dataManager.userType){
+                    AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
+                    alertDlg.setTitle("공지를 삭제하시겠습니까?");
+                    //서버에 보낼 공지시간, 방이름 가져오기
+                    NoticeData item = dataManager.notices.get(position);
+                    final String time = item.getNotice_time(); //서버에 보내
+                    final String groupN = item.getNotice_groupN();
 
-                alertDlg.setTitle("공지를 삭제하시겠습니까?");
-                //서버에 보낼 공지시간, 방이름 가져오기
-                NoticeData item = dataManager.notices.get(position);
-                final String time = item.getNotice_time(); //서버에 보내
-                final String groupN = item.getNotice_groupN();
-
-                //4/29//예,아니요 위치 바꿈 //
-                alertDlg.setPositiveButton("아니요", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        view.setBackgroundResource(R.color.list_gray);
-                        dialog.dismiss();
-                    }
-                });
-                alertDlg.setNegativeButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //공지 list-item 삭제
-                        dataManager.connectURL2(Protocol.URL_DELETE_NOTICE, "", "",
-                                time, groupN);
-                        view.setBackgroundResource(R.color.list_gray);
-                    }
-                });
-
-                /**4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경**/
-                alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                    public boolean onKey(DialogInterface dialog,
-                                         int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    //4/29//예,아니요 위치 바꿈 //
+                    alertDlg.setPositiveButton("아니요", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
                             view.setBackgroundResource(R.color.list_gray);
                             dialog.dismiss();
-                            return true;
                         }
-                        return false;
-                    }
-                });
-                alertDlg.show();
-                return true;
+                    });
+                    alertDlg.setNegativeButton("예", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //공지 list-item 삭제
+                            dataManager.connectURL2(Protocol.URL_DELETE_NOTICE, "", "",
+                                    time, groupN);
+                            view.setBackgroundResource(R.color.list_gray);
+                        }
+                    });
+
+                    /**4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경**/
+                    alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        public boolean onKey(DialogInterface dialog,
+                                             int keyCode, KeyEvent event) {
+                            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                                view.setBackgroundResource(R.color.list_gray);
+                                dialog.dismiss();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    alertDlg.show();
+                    return true;
+                }
+                else{ //가이드만 삭제할 수 있다 는 다이얼로그
+                    AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
+                    alertDlg.setTitle("삭제 권한이 없습니다.");
+                    alertDlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            view.setBackgroundResource(R.color.list_gray);
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        public boolean onKey(DialogInterface dialog,
+                                             int keyCode, KeyEvent event) {
+                            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                                view.setBackgroundResource(R.color.list_gray);
+                                dialog.dismiss();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    alertDlg.show();
+                    return true;
+                }
             }
         });
     }
@@ -477,6 +598,24 @@ public class MainActivity extends AppCompatActivity {
             notice2.show(); //다이얼로그 호출
         }
     }
+
+
+    //2016-05-16 서지현 - 목적지 공지 추가
+    public void createDestination() {
+        //가이드인지 파악
+        //if(dataManager.userType) {
+            //공지 입력 다이얼로그
+        Intent i = new Intent(this, DestinationActivity.class);
+        startActivity(i);
+
+
+        //}
+        //else{ //작성할수 없다 공지 띄우고 끝
+           // NoticeDialog notice2 = new NoticeDialog(MainActivity.this, 0);
+            //notice2.show(); //다이얼로그 호출
+       // }
+    }
+
 
 
 
@@ -520,6 +659,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.button_create_notice:
                 dialog_notice();
+                break;
+            case R.id.button_create_destination_notice:
+                createDestination();
                 break;
         }
     }
@@ -635,6 +777,32 @@ public class MainActivity extends AppCompatActivity {
             mMap.setInfoWindowAdapter(mMapInfoWindowAdapter); ///*************2016_02-27테스트중
 
             //mMap.addMarker(optFirst).showInfoWindow();
+
+        }
+
+        markingDestination();
+    }
+    public void initDestination() {
+        getDestination();
+    }
+    public void getDestination() {
+        dataManager.command(Protocol.URL_GET_DESTINATION_DATA, dataManager.groupData.getGroup_name(), "", "", "", "", "");
+    }
+
+    //2016-05-17 Destination Marking
+    public void markingDestination() {
+        //1. dataManager에서 Destination 객체 업데이트
+        DestinationData destinationData = dataManager.destinationData;
+        if( destinationData != null) {
+            Double latitude = Double.parseDouble(destinationData.getLatitude());
+            Double longitude = Double.parseDouble(destinationData.getLongitude());
+            //dataManager.destinationData.updateData();
+            destinationMarker = new MarkerOptions();
+            destinationMarker.position(new LatLng(latitude, longitude)); //위도*경도
+            destinationMarker.title("목적지"); //제목 미리보기
+            destinationMarker.snippet("목적지");
+            destinationMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_d));
+            mMap.addMarker(destinationMarker);
         }
     }
 
@@ -680,11 +848,24 @@ public class MainActivity extends AppCompatActivity {
     public void updateAllData() {
         //1. gps셋팅은 이미 되있음
 
+        //2.서버로 모든 데이터 업데이트 요청
+        //2.1 group내 user데이터
+        dataManager.command(Protocol.URL_GET_MY_GROUP_USERS_DATA, dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), dataManager.userData.getLatitude(), dataManager.userData.getLongitude(), dataManager.userData.getGroup_name());
+        //2.2 group내 notice 데이터
+        //dataManager.connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", dataManager.groupData.getGroup_name());
+        //2.3 group내의 destination 데이터
+        dataManager.command(Protocol.URL_GET_DESTINATION_DATA, dataManager.groupData.getGroup_name(), "", "", "", "", "");
+
         //데이터가 변했을때 호출
         userAdapter.notifyDataSetChanged();
 
         /**공지추가 **//////////////////////////
+        //noticeAdapter.notifyDataSetChanged();
+    }
+    public void notifyDataChanged() {
+        userAdapter.notifyDataSetChanged();
         noticeAdapter.notifyDataSetChanged();
+        //2016-05-17 목적지 추가
     }
 
 
@@ -738,6 +919,11 @@ public class MainActivity extends AppCompatActivity {
                         //2016-05-09
                         String user_phone_to_track = ((TextView) findViewById(R.id.text_infowindow_phone)).getText().toString();
                         String user_name_to_track = ((TextView) findViewById(R.id.text_infowindow_name)).getText().toString();
+
+                        //2016-05-15서지현
+                        SharedPreferencesManager.savePreferences(getApplicationContext(), "group_name", dataManager.groupData.getGroup_name());
+                        SharedPreferencesManager.savePreferences(getApplicationContext(), "user_phone_to_track", user_phone_to_track);
+                        // ****끝
                         Toast.makeText(
                                 getApplicationContext(),
                                 user_name_to_track + "님의 위치 추적(AR)",

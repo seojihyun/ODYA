@@ -8,20 +8,19 @@
     <LinearLayout
         android:layout_width="300dip"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
+        android:background="#48d1cc"
         android:orientation="vertical"
         android:weightSum="1">
 
-        <TextView
-            android:id="@+id/title_recv_message"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="MESSAGE"
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/img_sos"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
-            android:layout_weight="0.49" />
-
+            android:layout_weight="0.49"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="100dp"
@@ -32,7 +31,11 @@
             android:scrollbars="vertical"
             android:background="@android:drawable/editbox_dropdown_light_frame"
             android:textColor="#969696"
-            android:layout_weight="0.43" />
+            android:layout_weight="0.43"
+            android:textSize="20dp"
+            android:textIsSelectable="false"
+            android:gravity="center" />
+
 
 
         <LinearLayout
@@ -46,13 +49,19 @@
                 android:id="@+id/button_message_check"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="확인" />
+                android:text="확인"
+                android:background="@color/material_blue_grey_800"
+                android:layout_margin="3dp"
+                android:textColor="#ffffff" />
 
             <Button
                 android:id="@+id/button_message_cancel"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="취소" />
+                android:text="취소"
+                android:background="@color/material_blue_grey_800"
+                android:layout_margin="3dp"
+                android:textColor="#ffffff" />
         </LinearLayout>
     </LinearLayout>
 

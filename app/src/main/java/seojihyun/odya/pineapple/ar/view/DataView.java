@@ -18,6 +18,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import seojihyun.odya.pineapple.R;
+import seojihyun.odya.pineapple.SharedPreferencesManager;
 import seojihyun.odya.pineapple.ar.data.DataHandler;
 import seojihyun.odya.pineapple.ar.data.DataSource;
 import seojihyun.odya.pineapple.ar.gui.PaintScreen;
@@ -248,7 +249,8 @@ public class DataView {
                 for(DataSource.DATASOURCE source: DataSource.DATASOURCE.values()) {
                     // 선택된 데이터 소스로 데이터 요청을 한다
                     if(mixContext.isDataSourceSelected(source)) {
-                        requestData(DataSource.createRequestURL(source,lat,lon,alt,radius,Locale.getDefault().getLanguage()),DataSource.dataFormatFromDataSource(source),source);
+                        //2016-05-15 서지현
+                        requestData(DataSource.createRequestURL(source,lat,lon,alt,radius,Locale.getDefault().getLanguage(), SharedPreferencesManager.getPreferences(getContext(), "group_name") ,SharedPreferencesManager.getPreferences(getContext(), "user_phone_to_track")),DataSource.dataFormatFromDataSource(source),source);
 
                         // Debug notification
                         // Toast.makeText(mixContext, "Downloading from "+ source, Toast.LENGTH_SHORT).show();

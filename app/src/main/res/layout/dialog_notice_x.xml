@@ -3,22 +3,37 @@
     android:layout_width="wrap_content"
     android:layout_height="200dp"
     android:id="@+id/layout_root"
-    android:background="@android:color/darker_gray">
+    android:background="@android:color/background_light">
+    <TextView
+        android:layout_width="fill_parent"  android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:background="#00a697"
+        android:text="알림"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:id="@+id/textView">
+    </TextView>
+
     <TextView
         android:id="@+id/text_notice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="70dp"
         android:lineSpacingExtra="10dp"
-        android:textSize="18sp"
-        android:text="죄송합니다. \n가이드만 사용할 수 있습니다."/>
+        android:textSize="20sp"
+        android:text="죄송합니다. \n가이드만 사용할 수 있습니다."
+        android:textColor="#000000"/>
     <Button
         android:id="@+id/btn_ok"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="확인"
-        />
+        android:textColor="#ffffff"
+        android:background="@color/material_blue_grey_800" />
 
 </RelativeLayout>

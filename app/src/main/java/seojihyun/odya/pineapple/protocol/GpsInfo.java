@@ -200,7 +200,7 @@ public class GpsInfo extends Service implements LocationListener {
 
         //2016-03-28 테스트중_서지현
         //데이터가 변했을때 호출
-        mainActivity.updateAllData();
+        //mainActivity.updateAllData();
 
         //그룹을 나간 경우 gps 사용 x
         if(mainActivity.isDestroyed()) {

@@ -1,5 +1,6 @@
 package seojihyun.odya.pineapple;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -36,11 +37,8 @@ public class MessageDialog extends Dialog {
         lpWindow.dimAmount = 0.8f;
         getWindow().setAttributes(lpWindow);
 
-        setContentView(R.layout.dialog_recv_message);
+        //setContentView(R.layout.dialog_recv_message);
 
-        messageView = (TextView) findViewById(R.id.textView_message);
-        mLeftButton = (Button) findViewById(R.id.button_message_check);
-        mRightButton = (Button) findViewById(R.id.button_message_cancel);
 
         // 제목과 내용을 생성자에서 셋팅한다.
         //mTitleView.setText(mTitle);
@@ -61,20 +59,33 @@ public class MessageDialog extends Dialog {
     // 클릭버튼이 없을때 생성자 함수로 클릭이벤트를 받는다.
     public MessageDialog(Context context, String newMessage) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        setContentView(R.layout.dialog_recv_message);
+        messageView = (TextView) findViewById(R.id.textView_message);
+        mLeftButton = (Button) findViewById(R.id.button_message_check);
+        mRightButton = (Button) findViewById(R.id.button_message_cancel);
         this.messageView.setText(newMessage);
     }
     // 클릭버튼이 하나일때 생성자 함수로 클릭이벤트를 받는다.
     public MessageDialog(Context context, String newMessage,
                              View.OnClickListener singleListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        setContentView(R.layout.dialog_recv_message);
+        messageView = (TextView) findViewById(R.id.textView_message);
+        mLeftButton = (Button) findViewById(R.id.button_message_check);
+        mRightButton = (Button) findViewById(R.id.button_message_cancel);
         this.messageView.setText(newMessage);
         this.mLeftClickListener = singleListener;
+        this.mRightClickListener = singleListener; // 서지현 2016-05-11
     }
 
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
     public MessageDialog(Context context, String newMessage, View.OnClickListener leftListener,
                              View.OnClickListener rightListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        setContentView(R.layout.dialog_recv_message);
+        messageView = (TextView) findViewById(R.id.textView_message);
+        mLeftButton = (Button) findViewById(R.id.button_message_check);
+        mRightButton = (Button) findViewById(R.id.button_message_cancel);
         this.messageView.setText(newMessage);
         this.mLeftClickListener = leftListener;
         this.mRightClickListener = rightListener;

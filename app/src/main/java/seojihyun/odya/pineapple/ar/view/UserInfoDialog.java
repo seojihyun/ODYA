@@ -20,6 +20,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import seojihyun.odya.pineapple.R;
+import seojihyun.odya.pineapple.data.LoginSharedPreferences;
+import seojihyun.odya.pineapple.protocol.DataManager;
+import seojihyun.odya.pineapple.protocol.Protocol;
 
 /**
  * Created by SEOJIHYUN on 2016-05-09.
@@ -29,7 +32,7 @@ public class UserInfoDialog extends Dialog {
 
     //2016-05-07 getData
     String message;
-
+    DataManager dataManager;
 
     private Context context;
     private TextView mTitleView;
@@ -45,11 +48,12 @@ public class UserInfoDialog extends Dialog {
     private View.OnClickListener mLeftClickListener;
     private View.OnClickListener mRightClickListener;
 
-    public UserInfoDialog(Context context, Marker marker) {
+    public UserInfoDialog(Context context, Marker marker, DataManager dataManager) {
         super(context);
 
         this.context = context;
-        this.marker = marker;
+        this.marker = marker; // 현재 sos요청할 사용자
+        this.dataManager = dataManager;
 
     }
 
@@ -101,30 +105,30 @@ public class UserInfoDialog extends Dialog {
 
             // 2016-05-07 서버 푸시 테스트 *******************************************
             GetDataJSON connect = new GetDataJSON();
-            connect.execute("http://211.58.69.16:8080/pineapple/send_sos.php","01090807091", marker.getUser_phone(), "sos", "도와주세요");
+            String name = LoginSharedPreferences.getPreferences(context, "user_name");
+            String phone = LoginSharedPreferences.getPreferences(context, "user_phone");
+            //connect.execute("http://211.58.69.16:8080/pineapple/send_sos.php", dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), marker.getUser_phone());
+            connect.execute(Protocol.URL + "send_sos.php",phone, name, marker.getUser_phone());
         }
     }
     class GetDataJSON extends AsyncTask<String, Void, String> {
 
         ProgressDialog dialog;
-        String uri="", sender_phone="", receiver_phone="", type="", msg="";
+        String uri="", sender_phone="", receiver_phone="",  sender_name="";
 
         @Override
         protected String doInBackground(String... params) {
             try {
                 uri = params[0];
                 sender_phone = params[1];
-                receiver_phone = params[2];
-                type = params[3];
-                msg = params[4];
-
+                sender_name = params[2];
+                receiver_phone = params[3];
 
                 BufferedReader bufferedReader = null;
 
                 String sendData = URLEncoder.encode("sender_phone", "UTF-8") + "=" + URLEncoder.encode(sender_phone, "UTF-8");
+                sendData += "&" + URLEncoder.encode("sender_name", "UTF-8") + "=" + URLEncoder.encode(sender_name, "UTF-8");
                 sendData += "&" + URLEncoder.encode("receiver_phone", "UTF-8") + "=" + URLEncoder.encode(receiver_phone, "UTF-8");
-                sendData += "&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8");
-                sendData += "&" + URLEncoder.encode("msg", "UTF-8") + "=" + URLEncoder.encode(msg, "UTF-8");
                 URL url = new URL(uri);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
 

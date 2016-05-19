@@ -79,7 +79,7 @@ public class BackgroundActivity extends AppCompatActivity {
                 // Skips registration.
                 Toast.makeText(getApplicationContext(), "Already registered with GCM", Toast.LENGTH_LONG).show();
 
-                //2016-05-03
+                //2016-05-03 서지현
                 dataManager.connectURL(Protocol.URL_GET_ALL_GROUP_DATA, dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), dataManager.userData.getLatitude(), dataManager.userData.getLongitude(), dataManager.userData.getGroup_name());
 
 

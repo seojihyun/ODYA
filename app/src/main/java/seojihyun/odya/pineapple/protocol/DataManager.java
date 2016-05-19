@@ -10,6 +10,8 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.widget.Toast;
 import org.json.JSONArray;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -36,25 +39,35 @@ import seojihyun.odya.pineapple.adapters.NoticeAdapter;
  */
 public class DataManager extends Application {
     public boolean userType = false; // true=가이드, false=일반사용자
-    public UserData userData; //현재 사용자
-    public GroupData groupData; //현재 사용자가 입장한 그룹 방
+    public UserData userData= new UserData();; //현재 사용자
+    public GroupData groupData= new GroupData();; //현재 사용자가 입장한 그룹 방
     public Vector<UserData> users = new Vector<UserData>();//현재 사용자가 입장한 그룹의 그룹원들 정보
     public Vector<GroupData> groups = new Vector<GroupData>(); //현재 서버에 존재하는 모든 그룹 정보
     private String data; //서버로부터 받은 메세지 (프로토콜)
     private Activity activity; //현재 실행중인 액티비티
+    public MainActivity mainActivity;
     private BackgroundActivity backgroundActivity=null;
 
     /**공지추가 **//////////////////////////
-    public NoticeData noticeData; //현재 사용자가 입장한 그룹 방의 공지 ?
+    public NoticeData noticeData = new NoticeData();; //현재 사용자가 입장한 그룹 방의 공지 ?
     public Vector<NoticeData> notices = new Vector<NoticeData>(); //현재 서버에 존재하는 모든 공지 정보
     public NoticeAdapter nAdapter;
 
+    /*Destination*/
+    public DestinationData destinationData;
 
-    public DataManager() {}
+
+    public DataManager() {
+
+    }
 
     // 액티비티 등록
     public void setActivity(Activity activity) {
         this.activity = activity;
+        /*2016-05-17 서지현 추가*/
+        if(activity.getClass().getSimpleName().equals("MainActivity")) {
+            mainActivity = (MainActivity) activity;
+        }
         //if(activity.getClass().getSimpleName().equals("BackgroundActivity")) backgroundActivity = (BackgroundActivity) activity;
         //if(backgroundActivity != null) backgroundActivity.setCurrentActivity(activity);
     }
@@ -115,9 +128,6 @@ public class DataManager extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        userData = new UserData();
-        groupData = new GroupData();
-        noticeData = new NoticeData();
     }
 
     @Override
@@ -222,6 +232,13 @@ public class DataManager extends Application {
                     break;
                 case Protocol.URL_AR_GET_ALL_USER_LOCATION:
                     connectURL(params);
+                    break;
+                /*2016-05-17 목적지 기능 추가*/
+                case Protocol.URL_CREATE_DESTINATION:
+                    connectURL3(params);
+                    break;
+                case Protocol.URL_GET_DESTINATION_DATA:
+                    connectURL3(params);
                     break;
             } //end switch
         }// end if
@@ -337,8 +354,6 @@ public class DataManager extends Application {
         //Toast.makeText(activity, user_phone+ user_name+latitude+longitude+group_name+group_pwd+number, Toast.LENGTH_SHORT).show();
     }
 
-
-
     /**공지추가 **//////////////////////////
     public void connectURL2(String... params) {
         class GetDataJSON2 extends AsyncTask<String, Void, String> {
@@ -418,7 +433,90 @@ public class DataManager extends Application {
         g.execute(url, notice_title, notice_content, notice_time, group_name);
     }
 
+    /*Destination 서지현 2016-05-17*/
+    public void connectURL3(String... params) {
+        class GetDataJSON3 extends AsyncTask<String, Void, String> {
+            ProgressDialog dialog;
+            /**추가3/31: group_name="" **/
+            String uri="", group_name="", latitude="", longitude="", address="", content="", timeset="";
 
+            @Override
+            protected String doInBackground(String... params) {
+                try {
+                    uri = params[0];
+                    group_name = params[1];
+                    latitude = params[2];
+                    longitude = params[3];
+                    address = params[4];
+                    content = params[5];
+                    timeset = params[6];
+
+                    BufferedReader bufferedReader = null;
+
+                    String sendData = URLEncoder.encode("group_name", "UTF-8") + "=" + URLEncoder.encode(group_name, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("latitude", "UTF-8") + "=" + URLEncoder.encode(latitude, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("longitude", "UTF-8") + "=" + URLEncoder.encode(longitude, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("address", "UTF-8") + "=" + URLEncoder.encode(group_name, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("content", "UTF-8") + "=" + URLEncoder.encode(content, "UTF-8");
+                    sendData += "&" + URLEncoder.encode("timeset", "UTF-8") + "=" + URLEncoder.encode(timeset, "UTF-8");
+
+                    URL url = new URL(uri);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                    // 서버로 메세지 전송
+                    con.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+
+                    wr.write(sendData);
+                    wr.flush();
+
+
+                    // 서버로부터 데이터 수신
+                    StringBuilder sb = new StringBuilder();
+
+                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        sb.append(json + "\n");
+                    }
+
+                    return sb.toString().trim();
+
+                } catch (Exception e) {
+                    return null;
+                }
+
+
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                data = result;
+                getMessage(data);
+            }
+
+            @Override
+            protected void onPreExecute() {
+                //dialog = ProgressDialog.show(activity, "잠시만 기다려주세요", null, true, true);
+            }
+        }
+
+        String url = params[0];
+        String group_name = params[1];
+        String latitude = params[2];
+        String longitude = params[3];
+        String address = params[4];
+        String content = params[5];
+        String timeset = params[6];
+
+        //noticeData update
+        //noticeData.updateNotice(notice_title, notice_content, notice_time, group_name);
+
+        //Task 실행
+        GetDataJSON3 g = new GetDataJSON3();
+        g.execute(url, group_name, latitude, longitude, address, content, timeset);
+    }
 
 
 
@@ -587,6 +685,7 @@ public class DataManager extends Application {
                             //**********************2016_02_29 테스트중 (위치 업데이트 주기 때문에 스레드 런타임 충돌발생)
                             if(activity.getClass().getSimpleName().equals("MainActivity")) {
                                 ((MainActivity)activity).marking();
+                                //((MainActivity) activity).notifyDataChanged();
                             }
 
 
@@ -596,6 +695,58 @@ public class DataManager extends Application {
                     }
                     break;
 
+                case Protocol.MESSAGE_CREATE_DESTINATION:
+                    if (Protocol.RESULT_SUCCESS.equals(result)) {
+                        Toast.makeText(activity, "목적지 추가 성공~~~.", Toast.LENGTH_SHORT).show();
+                        if( !activity.getClass().getSimpleName().equals("MainActivity")) { break; }
+                        //connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", groupData.getGroup_name());
+                        command(Protocol.URL_GET_DESTINATION_DATA, groupData.getGroup_name(), "", "", "", "", "");
+
+                    } else {
+                        Toast.makeText(activity, "목적지 추가 실패", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                /*2016-05-17*/
+                case Protocol.MESSAGE_GET_DESTINATION_DATA:
+                    if (Protocol.RESULT_SUCCESS.equals(result)) {
+                        Toast.makeText(activity, "목적지 데이터 받기 성공", Toast.LENGTH_SHORT).show();
+                        //notice 받기
+                        //notices.removeAllElements();
+                        try {
+                            JSONArray array_destination = jsonObj.getJSONArray(Protocol.KEY_ARRAY);
+
+                            for (int i = 0; i < array_destination.length(); i++) {
+                                JSONObject c = array_destination.getJSONObject(i);
+                                String group_name = c.getString(Protocol.KEY_GROUP_NAME);
+                                String latitude = c.getString(Protocol.KEY_LATITUDE);
+                                String longitude = c.getString(Protocol.KEY_LONGITUDE);
+                                String address = c.getString(Protocol.KEY_ADDRESS);
+                                String content = c.getString(Protocol.KEY_CONTENT);
+                                String timeset = c.getString(Protocol.KEY_TIMESET);
+
+                                destinationData = new DestinationData(group_name, latitude, longitude, address, content, timeset);
+                            }
+                            // 2016-05-17 서지현 수정 (아 래 nAdapter 삭제하고 밑에 추가했어)
+                            if(activity.getClass().getSimpleName().equals("MainActivity")) {
+                                final MyHandler mHandler = new MyHandler((MainActivity) activity);
+                                //((MainActivity)activity).markingDestination();
+                                mHandler.handleMessage(mHandler.obtainMessage());
+                                Toast.makeText(activity, "목적지 마킹 성공", Toast.LENGTH_SHORT).show();
+                                //((MainActivity) activity).notifyDataChanged();
+                            }
+                            else { //테스트용 삭제 해도됨
+                                Toast.makeText(activity, "목적지 마킹 실패", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, activity.getClass().getSimpleName(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        Toast.makeText(activity, "목적지 데이터 받기 실패", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
                 /**공지추가 **///////////////////////////////////////////////////////////////////////
                 case Protocol.MESSAGE_CREATE_NOTICE:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
@@ -625,16 +776,7 @@ public class DataManager extends Application {
                                 String notice_group_name = c.getString(Protocol.KEY_NOTICE_GROUP_NAME);
                                 //notices 추가
                                 notices.add(new NoticeData(notice_title, notice_content, notice_time, notice_group_name));
-//                                nAdapter = mainActivity.getNoticeAdapter();
-//                                nAdapter.notifyDataSetChanged();
 
-                                /**4/30추가 : 공지변경시 그룹원들 위치 10초주기
-                                 for(int k=0; k<users.size(); k++){
-                                 //방 안에 있는 그룹원들의 위치만 다시 받기 (그룹이름 같으면)
-                                 if(groupData.getGroup_name().equals(users.get(k).getGroup_name())){
-                                 users.get(k).getGPS(activity);
-                                 }
-                                 } **/
                             }
                             nAdapter = mainActivity.getNoticeAdapter();
                             nAdapter.notifyDataSetChanged();
@@ -663,6 +805,22 @@ public class DataManager extends Application {
             e.printStackTrace();
         }
     }
+    // 핸들러 객체 만들기 2016-05-19 UI 스레드
+    private static class MyHandler extends Handler {
+        private final WeakReference<MainActivity> mainActivity;
+        public MyHandler(MainActivity activity) {
+            mainActivity = new WeakReference<MainActivity>(activity);
+        }
 
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity activity = mainActivity.get();
+
+            if (activity != null) {
+                //activity.handleMessage(msg);
+                activity.markingDestination();
+            }
+        }
+    }
 
 }

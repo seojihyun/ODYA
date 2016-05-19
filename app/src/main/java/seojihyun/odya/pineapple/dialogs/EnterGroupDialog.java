@@ -42,14 +42,12 @@ public class EnterGroupDialog extends Dialog {
         setContentView(R.layout.dialog_enter_group);
 
         mTitleView = (TextView) findViewById(R.id.txt_title);
-        mContentView = (TextView) findViewById(R.id.txt_content);
         password = (EditText) findViewById(R.id.edit_password);
         mLeftButton = (Button) findViewById(R.id.btn_left);
         mRightButton = (Button) findViewById(R.id.btn_right);
 
         // 제목과 내용을 생성자에서 셋팅한다.
         mTitleView.setText(mTitle);
-        mContentView.setText(mContent);
 
         // 클릭 이벤트 셋팅
         if (mLeftClickListener != null && mRightClickListener != null) {

@@ -19,7 +19,7 @@ public final class CommonUtilities {
      */
     static final String TAG = "AndroidHive GCM";
 
-    static final String DISPLAY_MESSAGE_ACTION =
+    public static final String DISPLAY_MESSAGE_ACTION =
             "seojihyun.odya.pineapple.DISPLAY_MESSAGE";
 
     static final String EXTRA_MESSAGE = "message";

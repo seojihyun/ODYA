@@ -6,6 +6,7 @@ import seojihyun.odya.pineapple.ar.data.DataSource;
 import seojihyun.odya.pineapple.ar.etc.Compatibility;
 import seojihyun.odya.pineapple.ar.gui.PaintScreen;
 import seojihyun.odya.pineapple.ar.render.Matrix;
+import seojihyun.odya.pineapple.protocol.DataManager;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -25,9 +26,13 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.*;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,11 +48,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import static android.hardware.SensorManager.SENSOR_DELAY_GAME;
 
 // 메인에 보여지게 될 믹스뷰(액티비티) 클래스
 public class MixView extends FragmentActivity implements SensorEventListener,LocationListener, View.OnTouchListener {
+
+    DataManager dataManager;
+
+    //2016-05-15
+    private FrameLayout actionButtonLayout;
+    ListView user_list;
 
     //2016-05-06 User Info test
     private FrameLayout userInfoLayout;
@@ -217,6 +229,10 @@ public class MixView extends FragmentActivity implements SensorEventListener,Loc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //2016-05-12
+        dataManager = (DataManager)this.getApplicationContext();
+        dataManager.setActivity(this);
+
         // 데이터 소스로부터 아이콘 생성
         DataSource.createIcons(getResources());
 
@@ -270,9 +286,12 @@ public class MixView extends FragmentActivity implements SensorEventListener,Loc
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
 
-            maintainMap(); //2016-05-06***********************
+            maintainMap(); //2016-05-06*********************** 서지현
 
-            maintainUserInfo();
+
+            maintainActionButton();
+
+           // maintainUserInfo(); //서지현
 
 
             // 최종적으로 더해지는 것은 위에서 설정한 프레임 레이아웃.
@@ -327,6 +346,16 @@ public class MixView extends FragmentActivity implements SensorEventListener,Loc
             doError(ex);	// 예외 발생시 에러 처리
         }
     }
+    //2016-05-15 actionButton
+    public void maintainActionButton() {
+        View ar_ui = getLayoutInflater().inflate(R.layout.ar_ui, null);
+        user_list = (ListView)findViewById(R.id.ar_user_list_view);
+
+
+        addContentView(ar_ui, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
 
     //2016-05-06 maintainMap - Google map 추가
     public void maintainMap() {
@@ -340,6 +369,7 @@ public class MixView extends FragmentActivity implements SensorEventListener,Loc
         View mapView = getLayoutInflater().inflate(R.layout.activity_maps, null);
         mapLayout.addView(mapView);
         // 끝***
+
 
         // 2016-04-13 구글맵 테스트2 - zoom, 위치 추적관련
         map =  ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map))
@@ -1034,7 +1064,7 @@ public class MixView extends FragmentActivity implements SensorEventListener,Loc
             MarkerOptions optFirst = new MarkerOptions();
             // 마커 위치 지정
             optFirst.position(latLng); //위도*경도
-            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_map));
+            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_edit));
             map.addMarker(optFirst);
             //2014-04-21 ****끝
 
