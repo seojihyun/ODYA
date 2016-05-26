@@ -18,6 +18,10 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"
             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/shadow" />
 
         <FrameLayout
             android:id="@+id/frame"
@@ -40,7 +44,9 @@
                         android:layout_height="wrap_content"
                         android:tabStripEnabled="false"
                         android:touchscreenBlocksFocus="false"
-                        android:focusable="false">
+                        android:focusable="false"
+                        android:background="#ffffff"
+                        android:showDividers="end">
                     </TabWidget>
 
                     <FrameLayout
@@ -54,79 +60,68 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
-                            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                                android:layout_height="match_parent" android:id="@+id/map"
-                                tools:context="com.example.seojihyun.pineapple.activities.MainActivity"
-                                android:name="com.google.android.gms.maps.SupportMapFragment" />
-
-                            <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="새로고침"
-                                android:id="@+id/button_map_setting"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:onClick="onClick" />
-
-                            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                android:orientation="vertical"
+                            <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                xmlns:tools="http://schemas.android.com/tools"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentBottom="true"
-                                android:background="#ffffff"
-                                android:id="@+id/layout_map_profile"
-                                android:visibility="invisible">
+                                android:layout_height="match_parent"
+                                android:fitsSystemWindows="true"
+                                tools:context="seojihyun.odya.seodesign.MainActivity">
+                                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                    android:layout_height="match_parent" android:id="@+id/map"
+                                    tools:context="com.example.seojihyun.pineapple.activities.MainActivity"
+                                    android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-                                <TextView
-                                    android:id="@+id/text_infowindow_name"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="45dp"
-                                    android:background="#48d1cc"
-                                    android:text="이름"
-                                    android:textSize="25dp"
-                                    android:textColor="#ffffff"
-                                    android:gravity="center" />
-
-                                <TextView
+                                <Button
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="전화번호"
-                                    android:id="@+id/text_infowindow_phone"
-                                    android:layout_marginLeft="20dp"
-                                    android:visibility="gone"/>
-
+                                    android:text="새로고침"
+                                    android:id="@+id/button_map_setting"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:onClick="onClick" />
                                 <LinearLayout
-                                    android:orientation="horizontal"
+                                    android:id="@+id/layout_map_profile"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center">
+                                    android:background="@drawable/border_primary"
+                                    android:orientation="vertical"
+                                    app:behavior_peekHeight="40dp"
+                                    app:behavior_hideable="false"
+                                    app:layout_behavior="@string/bottom_sheet_behavior"
+                                    android:layout_margin="5dp">
 
-                                    <Button
-                                        android:layout_width="60dp"
-                                        android:layout_height="60dp"
-                                        android:layout_marginTop="15dp"
-                                        android:layout_marginBottom="15dp"
-                                        android:layout_marginLeft="32dp"
-                                        android:layout_marginRight="30dp"
-                                        android:text=""
-                                        android:background="@drawable/button_ar"
-                                        android:id="@+id/button_infowindow_ar"
-                                        android:layout_gravity="center" />
+                                    <TextView
+                                        android:layout_width="386dp"
+                                        android:layout_height="40dp"
+                                        android:ellipsize="end"
+                                        android:gravity="center_vertical"
+                                        android:lines="1"
+                                        android:maxLines="1"
+                                        android:text="  유저 정보"
+                                        android:textAppearance="?android:attr/textAppearanceMedium"
+                                        android:textColor="#ffffff" />
 
-                                    <Button
-                                        android:layout_width="60dp"
-                                        android:layout_height="60dp"
-                                        android:layout_marginTop="15dp"
-                                        android:layout_marginBottom="15dp"
-                                        android:layout_marginLeft="30dp"
-                                        android:layout_marginRight="40dp"
-                                        android:text=""
-                                        android:background="@drawable/button_call"
-                                        android:id="@+id/button_infowindow_call"
-                                        android:layout_gravity="center" />
+                                    <include
+                                        layout="@layout/maptab_user_info"
+                                        android:id="@+id/maptab_user_info"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content" />
+
                                 </LinearLayout>
-                            </LinearLayout>
+
+                                <android.support.design.widget.FloatingActionButton
+                                    android:id="@+id/fab"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="16dp"
+                                    android:layout_marginEnd="16dp"
+                                    android:src="@android:drawable/ic_menu_mylocation"
+                                    app:layout_anchor="@+id/layout_map_profile"
+                                    app:layout_anchorGravity="top|right" />
+
+                            </android.support.design.widget.CoordinatorLayout>
 
 
                         </RelativeLayout>
@@ -141,10 +136,10 @@
                                 android:id="@+id/list_user"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="#cccc"
+                                android:background="#ffffff"
                                 android:choiceMode="singleChoice"
                                 android:divider="@android:color/transparent"
-                                android:dividerHeight="0dp"/>
+                                android:dividerHeight="1dp" />
 
                         </LinearLayout>
 
@@ -153,21 +148,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
-
-                            <ListView
+                            <android.support.v7.widget.RecyclerView
                                 android:id="@+id/list_notice"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="#cccc"
-                                android:choiceMode="singleChoice"
-                                android:divider="@android:color/transparent"
-                                android:dividerHeight="1dp">
-                            </ListView>
+                                style="@style/Widget.MaterialSheetFab.Note.List"
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:paddingBottom="@dimen/note_spacing" />
+
                             <com.github.clans.fab.FloatingActionMenu
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|right"
-                                app:fab_elevationCompat="4dp">
+                                app:fab_elevationCompat="4dp"
+                                android:id="@+id/menu_create_notice"
+                                android:visibility="gone">
                                 <com.github.clans.fab.FloatingActionButton
                                     android:id="@+id/button_create_notice"
                                     android:layout_width="wrap_content"
@@ -200,16 +193,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/header"
         app:menu="@menu/menu_drawer"
-        android:background="@color/button_material_dark">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <include
-                android:id="@+id/top"
-                android:layout_width="fill_parent"
-                android:layout_height="190dp"
-                layout="@layout/header"/>
-        </LinearLayout>
+        android:background="#ffffff">
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

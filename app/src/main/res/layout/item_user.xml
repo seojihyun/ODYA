@@ -16,31 +16,64 @@
         android:layout_height="match_parent"
         android:layout_weight="4"
         android:layout_marginLeft="10dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:weightSum="1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_user_phone"
-            android:textSize="15dp"
-            android:text="NEW text"
-            android:textColor="#878787" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/text_user_name"
-            android:textSize="15dp"
-            android:textColor="#878787" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="phone"
+                android:id="@+id/textView2"
+                android:layout_marginRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_user_phone"
+                android:textSize="15dp"
+                android:text="NEW text"
+                android:textColor="#878787" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="name"
+                android:id="@+id/textView3"
+                android:layout_marginRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/text_user_name"
+                android:textSize="15dp"
+                android:textColor="#878787" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="53dp"
+        android:layout_height="56dp"
         android:text="클릭"
         android:id="@+id/button_user_profile"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:src="@android:drawable/ic_menu_mylocation" />
 
 
 

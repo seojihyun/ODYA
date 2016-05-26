@@ -10,39 +10,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom">
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab1"
+            android:id="@+id/ar_button_beep"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
+            android:src="@android:drawable/ic_lock_idle_alarm"
             fab:fab_label="경보음"
             style="@style/MenuButtonsStyle" />
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab2"
+            android:id="@+id/ar_button_flash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
+            android:src="@android:drawable/stat_notify_error"
             fab:fab_label="플래시"
             style="@style/MenuButtonsStyle" />
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab3"
+            android:id="@+id/ar_button_exit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
+            android:src="@drawable/ic_close"
             fab:fab_label="종료 하기"
             style="@style/MenuButtonsStyle" />
     </com.github.clans.fab.FloatingActionMenu>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="133dp"
-        android:layout_height="215dp"
-        android:layout_gravity="left|center_vertical"
-        android:background="@drawable/abc_list_focused_holo">
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ar_user_list_view" />
-    </LinearLayout>
 
 </FrameLayout>

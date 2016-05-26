@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +77,7 @@ public class GroupAdapter extends BaseAdapter {
         * */
 
         // 버튼 눌렀을때 선택된 제품명 출력하기
-        Button button = (Button) convertView.findViewById(R.id.button_enter_group);
+        ImageView button = (ImageView) convertView.findViewById(R.id.button_enter_group);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

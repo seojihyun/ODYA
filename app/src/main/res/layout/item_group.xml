@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_margin="10dp"
     android:layout_height="70dp">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="4">
+        android:layout_weight="4"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical"
+        android:background="#ffffff">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,11 +31,13 @@
             android:textColor="@color/abc_search_url_text_selected" />
     </LinearLayout>
 
-    <Button
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:text="ENTER"
+        android:src="@drawable/button_enter_group"
         android:id="@+id/button_enter_group"
         android:layout_weight="1"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:background="#ffffff" />
 </LinearLayout>

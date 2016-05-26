@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="300dip"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="@drawable/border_shadow"
         android:orientation="vertical">
 
         <TextView
@@ -18,24 +18,33 @@
             android:gravity="center"
             android:textColor="@color/background_material_light"
             android:textSize="15sp"
-            android:text="Group 입장"
+            android:text="그룹 생성"
             android:singleLine="false"
-            android:background="#00a697" />
+            android:background="@drawable/border_shadow_primary"
+            android:autoText="false" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Group Name"
+            android:paddingLeft="15dp"
+            android:layout_marginTop="10dp" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/edit_create_group_name"
-            android:layout_margin="15dp"
-            android:hint="Group Name"
-            android:editable="false"
-            style="@android:style/Widget.Holo.EditText"
-            android:background="@android:color/darker_gray"
             android:textColor="#969696"
-            android:autoText="false" />
-
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:paddingLeft="15dp"
+            android:layout_marginTop="10dp" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -43,11 +52,10 @@
             android:ems="10"
             android:id="@+id/edit_create_password"
             android:layout_gravity="center_horizontal"
-            android:hint="Password"
-            android:background="@android:color/darker_gray"
             android:textColor="#969696"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:paddingLeft="10dp" />
 
         <LinearLayout
             android:layout_width="fill_parent"

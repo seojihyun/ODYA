@@ -7,19 +7,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activities.DestinationActivity">
+    tools:context=".activities.DestinationActivity"
+    android:background="#7d7d7d">
 
     <TabHost
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="357dp"
+        android:layout_height="455dp"
         android:id="@+id/tabHost2"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:background="@drawable/abc_popup_background_mtrl_mult">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text = "목적지 공지 화면"
+                android:background="@color/colorPrimary"
+                android:padding="10dp"
+                android:gravity="center" />
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
@@ -41,54 +49,56 @@
                         android:layout_height="match_parent" android:id="@+id/destination_map"
                         tools:context="com.example.seojihyun.pineapple.activities.MainActivity"
                         android:name="com.google.android.gms.maps.SupportMapFragment" />
+                    <include
+                        layout="@layout/fab_done"
+                        android:id="@+id/destination_fab1"
+                        android:onClick="nextStep"
+                        android:visibility="gone" />
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="->"
-                        android:id="@+id/button2"
-                        android:layout_gravity="right"
-                        android:onClick="nextStep"/>
                 </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/d_tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="#ffffff">
 
 
                     <TimePicker
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/timePicker"/>
+                    <include
+                        layout="@layout/fab_done"
+                        android:id="@+id/destination_fab2"
+                        android:onClick="nextStep" />
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="->"
-                        android:layout_gravity="right"
-                        android:onClick="nextStep"
-                        android:id="@+id/button3" />
                 </FrameLayout>
 
                 <LinearLayout
                     android:id="@+id/d_tab3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="#ffffff">
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/destination_content"
                         android:hint="내용 작성해주세요"
-                        android:layout_weight="5" />
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="제출"
+                        android:layout_weight="5"
+                        android:layout_margin="15dp"
+                        android:gravity="top|left"
+                        android:background="@drawable/border_grey"
+                        android:autoText="false"
+                        android:padding="10dp" />
+
+                    <include
+                        layout="@layout/fab_done"
                         android:id="@+id/submit_destination"
-                        android:layout_weight="1" />
+                        android:visibility="gone" />
+
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

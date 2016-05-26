@@ -28,6 +28,7 @@ import java.net.URLEncoder;
 import java.util.Vector;
 
 import seojihyun.odya.pineapple.BackgroundActivity;
+import seojihyun.odya.pineapple.NotesAdapter;
 import seojihyun.odya.pineapple.R;
 import seojihyun.odya.pineapple.activities.MainActivity;
 import seojihyun.odya.pineapple.activities.SignUpActivity;
@@ -53,7 +54,7 @@ public class DataManager extends Application {
     /**공지추가 **//////////////////////////
     public NoticeData noticeData = new NoticeData();; //현재 사용자가 입장한 그룹 방의 공지 ?
     public Vector<NoticeData> notices = new Vector<NoticeData>(); //현재 서버에 존재하는 모든 공지 정보
-    public NoticeAdapter nAdapter;
+    public NotesAdapter nAdapter;
 
     /*Destination*/
     public DestinationData destinationData;
@@ -797,7 +798,7 @@ public class DataManager extends Application {
 
                             }
                             nAdapter = mainActivity.getNoticeAdapter();
-                            nAdapter.notifyDataSetChanged();
+                            nAdapter.updateData(activity);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -1,7 +1,12 @@
 package seojihyun.odya.pineapple.activities;
 
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +37,11 @@ public class DestinationActivity extends AppCompatActivity {
     double latitude, longitude;
     String content;
     EditText editText;
+
+    int pageNum=0; //현재 페이지 넘버
+    FloatingActionButton fab1, fab2, fab3;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,15 +51,7 @@ public class DestinationActivity extends AppCompatActivity {
 
 
         /* 0. 목적지 제출 버튼 리스너 부착*/
-        Button submitButton = (Button) findViewById(R.id.submit_destination);
-        if (submitButton != null) {
-            submitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    submitDestination();
-                }
-            });
-        }
+        initButton();
         /* 1. Tab 초기화 */
         initTabHost();
         /* 2. Map Tab 초기화 */
@@ -58,6 +60,8 @@ public class DestinationActivity extends AppCompatActivity {
         initTimePicker();
         /* 4. Content 관련 초기화 */
         initContent();
+        /*5. 버튼 셋업*/
+
 
     }
     /* 1. Tab 초기화 */
@@ -115,6 +119,10 @@ public class DestinationActivity extends AppCompatActivity {
                 optFirst.title("목적지"); //제목 미리보기
                 optFirst.snippet("목적지");
                 currentMarker = map.addMarker(optFirst);
+
+                // fab 버튼 show & 페이지 선택 true
+                fab1.show();
+
             }
         });
         // mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
@@ -126,23 +134,78 @@ public class DestinationActivity extends AppCompatActivity {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 timeSet = String.format("%d시 %d분", timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+
             }
         });
     }
 
     public void initContent() {
-         editText = (EditText) findViewById(R.id.destination_content);
+
+        editText = (EditText) findViewById(R.id.destination_content);
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                /* no-op */
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // hiding the floating action button if text is empty
+                if (s.length() == 0) {
+                    fab3.hide();
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // showing the floating action button if avatar is selected and input data is valid
+
+                fab3.show();
+
+            }
+        };
+        editText.addTextChangedListener(textWatcher);
     }
 
     public void nextStep(View view) {
         int id = view.getId();
         switch (id) {
-            case R.id.button2:
+            case R.id.destination_fab1:
                 tabHost.setCurrentTab(1);
                 break;
-            case R.id.button3:
+            case R.id.destination_fab2:
                 tabHost.setCurrentTab(2);
                 break;
+        }
+    }
+    public void initButton() {
+        fab1 = (FloatingActionButton) findViewById(R.id.destination_fab1);
+        fab2 = (FloatingActionButton) findViewById(R.id.destination_fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.submit_destination);
+        if(fab1 != null) {
+            fab1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tabHost.setCurrentTab(1);
+                }
+            });
+        }
+        if(fab2 != null) {
+            fab2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tabHost.setCurrentTab(2);
+                }
+            });
+        }
+        if (fab3 != null) {
+            fab3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    submitDestination();
+                }
+            });
         }
     }
 

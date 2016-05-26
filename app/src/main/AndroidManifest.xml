@@ -104,7 +104,6 @@
         <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".ar.view.MixView"
-            android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape">
             <intent-filter>
@@ -140,7 +139,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".SOSActivity" />
-        <activity android:name=".activities.DestinationActivity" />
+        <activity android:name=".activities.DestinationActivity" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

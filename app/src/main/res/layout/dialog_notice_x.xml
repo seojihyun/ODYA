@@ -3,18 +3,19 @@
     android:layout_width="wrap_content"
     android:layout_height="200dp"
     android:id="@+id/layout_root"
-    android:background="@android:color/background_light">
+    android:background="@drawable/border_shadow">
     <TextView
         android:layout_width="fill_parent"  android:layout_height="50dp"
         android:layout_gravity="center_vertical"
         android:paddingTop="10dp"
         android:paddingLeft="20dp"
-        android:background="#00a697"
+        android:background="@color/colorPrimary"
         android:text="알림"
         android:textColor="#ffffff"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:id="@+id/textView">
+        android:id="@+id/textView"
+        android:layout_marginRight="4dp">
     </TextView>
 
     <TextView
@@ -29,11 +30,12 @@
         android:textColor="#000000"/>
     <Button
         android:id="@+id/btn_ok"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="확인"
         android:textColor="#ffffff"
-        android:background="@color/material_blue_grey_800" />
+        android:background="@color/material_blue_grey_800"
+        android:layout_marginRight="4dp" />
 
 </RelativeLayout>

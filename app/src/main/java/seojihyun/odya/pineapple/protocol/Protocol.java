@@ -4,7 +4,7 @@ package seojihyun.odya.pineapple.protocol;
  * Created by SEOJIHYUN on 2016-02-20.
  */
 public class Protocol {
-    public static final String URL = "http:// 서지현 /pineapple/";
+    public static final String URL = "http://211.58.69.16:8080/pineapple/";
 
     /* GCM 관련 */
 

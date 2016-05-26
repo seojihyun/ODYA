@@ -3,13 +3,13 @@
     android:id="@+id/layout_root"
     android:orientation="vertical"
     android:layout_width="wrap_content" android:layout_height="400dp"
-    android:background="#ededed">
+    android:background="#ffffff">
 
     <!-- title layout-->
     <LinearLayout
         android:id="@+id/title"
         android:layout_width="match_parent" android:layout_height="55dp"
-        android:background="#00a697"
+        android:background="@color/colorPrimary"
         >
         <TextView
             android:id="@+id/text_title"

@@ -1,5 +1,6 @@
 package seojihyun.odya.pineapple.activities;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,7 +36,13 @@ public class LoginActivity extends AppCompatActivity {
         //이미 가입된 정보 표시
         phoneText.setText(dataManager.userData.getUser_phone());
         nameText.setText(dataManager.userData.getUser_name());
-
+        FloatingActionButton loginButton = (FloatingActionButton) (findViewById(R.id.login_button));
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login(v);
+            }
+        });
 
     }
 

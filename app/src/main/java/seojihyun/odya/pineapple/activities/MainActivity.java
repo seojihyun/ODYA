@@ -5,15 +5,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,12 +26,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,6 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import seojihyun.odya.pineapple.NotesAdapter;
 import seojihyun.odya.pineapple.SOSActivity;
 import seojihyun.odya.pineapple.SharedPreferencesManager;
 import seojihyun.odya.pineapple.WakeLocker;
@@ -62,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* 탭 관련 변수 */
     TabHost mtabHost;
+    int prevTab = 0;
 
     /*네비게이션 드로어 관련 변수*/
     //Defining Variables
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*notice 관련 변수*/
     ListView noticeList;
-    NoticeAdapter noticeAdapter;
+    NotesAdapter noticeAdapter;
     NoticeDialog notice;
     View.OnClickListener noticelistener;
 
@@ -149,12 +158,12 @@ public class MainActivity extends AppCompatActivity {
             }
             if(newMessage.equals("destination")) {
                 getDestination();
-
                 return;
 
             }
             if(newMessage.equals("notice")) {
-                initNotice(); //2016-05-19
+                //initNotice(); //2016-05-19
+                getNoticeData();
                 return;
             }
 
@@ -180,6 +189,33 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         dataManager.setActivity(this);
     }
+    public void initBottomSheet() {
+        // 1 . bottom _ sheet 설정
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
+        /* 레아이웃에 설정 되어있음
+        behavior.setPeekHeight((int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 72.f, getResources().getDisplayMetrics()));
+        behavior.setHideable(false);
+        */
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
+                switch(behavior.getState()) {
+                    case BottomSheetBehavior.STATE_EXPANDED:// if bottom_sheet is opened
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        break;
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        break;
+                    // if bottom_sheet is closed
+                }
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
                 DISPLAY_MESSAGE_ACTION));
 
 
+        //2016-05-22 UI 관련 - 서지현
+        initBottomSheet();
 
 
 
@@ -282,26 +320,45 @@ public class MainActivity extends AppCompatActivity {
     // 1. 초기화 - 탭호스트부분
     public void initTabHost() {
 
-        TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
+        final TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
+
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag1");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Map"); //탭버튼에 들어갈 이름
+        spec.setIndicator("MAP"); //탭버튼 클릭 시 이미지 변환
         tabHost.addTab(spec); //탭호스트에 탭 추가
 
         spec = tabHost.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("List");
+        spec.setIndicator("USERS");
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("tag3");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("notice");
+        spec.setIndicator("NOTICE");
         tabHost.addTab(spec);
 
         // tab1부분이 초기화면으로 설정
         tabHost.setCurrentTab(0);
+
+/*
+        prevTab = tabHost.getCurrentTab();// Keep track of the default tab
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener(){ //tabhost is a variable of type TabHost, which will contain all your tabs
+            @Override
+            public void onTabChanged(String id) {
+                int tab = tabHost.getCurrentTab();
+                TextView tv = (TextView) tabHost.getTabWidget().getChildAt(tab).findViewById(android.R.id.title);
+                tv.setTextColor(Color.BLUE);//Set selected tab colour to something you want
+
+                if(prevTab!=-1){// If there was a previously selected tab, set it back to a default colour as it is now unselected
+                    TextView tv1 = (TextView) tabHost.getTabWidget().getChildAt(prevTab).findViewById(android.R.id.title);
+                    tv1.setTextColor(Color.WHITE);
+                }
+                prevTab = tab; //Update this newly selected tab to the currently selected tab, for same logic to repeat for future tab changes
+            }
+        });
+*/
     }
 
     // 2. 초기화 - 네비게이션 드로어 부분
@@ -328,8 +385,8 @@ public class MainActivity extends AppCompatActivity {
         //View header = LayoutInflater.from(this).inflate(R.layout.header, null); 2016-05-15 서지현 네비게이션 헤더 부분 수정 삭제
         //navigationView.addHeaderView(header);
 
-        TextView user_name = (TextView) findViewById(R.id.header_user_name);
-        TextView user_phone = (TextView)findViewById(R.id.header_user_phone);
+        TextView user_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_user_name);
+        TextView user_phone = (TextView)navigationView.getHeaderView(0).findViewById(R.id.header_user_phone);
 
         user_name.setText(dataManager.userData.getUser_name());
         user_phone.setText(dataManager.userData.getUser_phone());
@@ -438,8 +495,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**공지추가 **//////////////////////////
+    public void getNoticeData() {
+        //저장되어 있는 공지 가져오기
+        dataManager.connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", dataManager.groupData.getGroup_name());
+        if(noticeAdapter != null) {
+            noticeAdapter.updateData(this.getApplicationContext());
+        }
+        else {
+            //초기 셋팅시 initNotice()
+        }
+    }
     // 4. 초기화 - notice 탭 부분
     public void initNotice() {
+
+        getNoticeData();
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_notice);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,
+                StaggeredGridLayoutManager.VERTICAL));
+        noticeAdapter = new NotesAdapter(this, 9);
+        recyclerView.setAdapter(noticeAdapter);
+
+        if(dataManager.userType) { // 2016-05-26 서지현
+            // 가이드 인 경우 FloatingActionButton visibility 수정
+            // 즉 가이드만 공지 생성가능
+            FloatingActionMenu createNoticeMenu = (FloatingActionMenu) findViewById(R.id.menu_create_notice);
+           createNoticeMenu.setVisibility(View.VISIBLE);
+        }
+
+        /*
         noticeList = (ListView)findViewById(R.id.list_notice);
         noticeAdapter = new NoticeAdapter(this,R.layout.list_notice_item, dataManager.notices);
         noticeList.setAdapter(noticeAdapter);
@@ -455,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
                 view.setBackgroundResource(R.color.dark_gray);
                 AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
 
-                /**4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경**/
+                ///4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경
                 alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
                     public boolean onKey(DialogInterface dialog,
                                          int keyCode, KeyEvent event) {
@@ -468,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                /**4/30 추가: 공지내용보기 title 배경색 설정 - xml 생성**/
+                ////4/30 추가: 공지내용보기 title 배경색 설정 - xml 생성*
                 //title 만 설정
                 LayoutInflater inflater = getLayoutInflater();
                 View view1 = inflater.inflate(R.layout.dialog_notice_content, null);
@@ -490,13 +574,12 @@ public class MainActivity extends AppCompatActivity {
                 alertDlg.show();
             }
         });
-        /**추가4/14 **/
         //공지 삭제 (길게 눌렀을 때 삭제 다이얼로그)
         noticeList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
                 view.setBackgroundResource(R.color.dark_gray);
-                /**5/12 추가 - 가이드만 삭제**/
+                ///5/12 추가 - 가이드만 삭제
                 if(dataManager.userType){
                     AlertDialog.Builder alertDlg = new AlertDialog.Builder(view.getContext());
                     alertDlg.setTitle("공지를 삭제하시겠습니까?");
@@ -523,7 +606,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    /**4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경**/
+                    //4/30 추가: 공지내용보기 back key - 리스트뷰 배경색 변경
                     alertDlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
                         public boolean onKey(DialogInterface dialog,
                                              int keyCode, KeyEvent event) {
@@ -564,10 +647,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        */
     }
 
     //DM에서 호출
-    public NoticeAdapter getNoticeAdapter(){return noticeAdapter;}
+    public NotesAdapter getNoticeAdapter(){return noticeAdapter;}
 
     public void dialog_notice(){
         //2-1. 공지 리스너
@@ -644,7 +728,8 @@ public class MainActivity extends AppCompatActivity {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                marker.showInfoWindow();
+                //marker.showInfoWindow();
+                mMapInfoWindowAdapter.getInfoContents(marker);
                 return true;
             }
         });
@@ -825,6 +910,7 @@ public class MainActivity extends AppCompatActivity {
         focusedUserMarker.showInfoWindow();
 
         // ********************************2016-03-31 아 ..이게문제야..
+
         mMapInfoWindowAdapter.getInfoContents(focusedUserMarker);
 
         //네비게이션 드로어 닫기
@@ -893,15 +979,14 @@ public class MainActivity extends AppCompatActivity {
             selectedMarker = marker;
             // 텍스트, 이미지등 설정
             try {
-                TextView name = (TextView) mapContentsView.findViewById(R.id.text_infowindow_name);
-                TextView phone = (TextView) mapContentsView.findViewById(R.id.text_infowindow_phone);
 
                 ///**********2016-2-29 테스트중 (프로필 fragment 관련)
-                TextView name2 = (TextView) findViewById(R.id.text_infowindow_name);
-                TextView phone2 = (TextView) findViewById(R.id.text_infowindow_phone);
                 LinearLayout layout_profile = (LinearLayout) findViewById(R.id.layout_map_profile);
-                Button button_ar = (Button) findViewById(R.id.button_infowindow_ar);
-                Button button_call = (Button) findViewById(R.id.button_infowindow_call);
+                LinearLayout map_layout_profile = (LinearLayout) findViewById(R.id.maptab_user_info);
+                TextView name = (TextView) map_layout_profile.findViewById(R.id.text_infowindow_name);
+                TextView phone = (TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone);
+                Button button_ar = (Button) map_layout_profile.findViewById(R.id.button_infowindow_ar);
+                Button button_call = (Button) map_layout_profile.findViewById(R.id.button_infowindow_call);
                 layout_profile.setVisibility(View.VISIBLE);
                 //*************
 
@@ -909,16 +994,14 @@ public class MainActivity extends AppCompatActivity {
                 name.setText(focusUserData.getUser_name());
                 phone.setText(focusUserData.getUser_phone());
 
-                // **********2016-2-29 테스트중 (프로필 fragment 관련)
-                name2.setText(focusUserData.getUser_name());
-                phone2.setText(focusUserData.getUser_phone());
                 button_ar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //AR로 연결 - activity
                         //2016-05-09
-                        String user_phone_to_track = ((TextView) findViewById(R.id.text_infowindow_phone)).getText().toString();
-                        String user_name_to_track = ((TextView) findViewById(R.id.text_infowindow_name)).getText().toString();
+                        LinearLayout map_layout_profile = (LinearLayout) findViewById(R.id.maptab_user_info);
+                        String user_phone_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone)).getText().toString();
+                        String user_name_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_name)).getText().toString();
 
                         //2016-05-15서지현
                         SharedPreferencesManager.savePreferences(getApplicationContext(), "group_name", dataManager.groupData.getGroup_name());
@@ -931,7 +1014,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(getApplicationContext(), MixView.class);
                         startActivity(intent);
-                        finish();
+                        //finish(); 2016-05-24 서지현 삭제
                     }
                 });
                 button_call.setOnClickListener(new View.OnClickListener() {
@@ -950,6 +1033,10 @@ public class MainActivity extends AppCompatActivity {
             // name.setText(dataManager.userData.getUser_name()); //NullPointException 임... 해결 필요함 --> 해결책: view.findViewById() 로 해야됨 (not findViewById() )
             // phone.setText(dataManager.userData.getUser_phone());
             //프로필 설정 ********* 추가 예정
+
+            //bottom sheet open 2016-05-24 서지현
+            BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             return mapContentsView;
         }
 

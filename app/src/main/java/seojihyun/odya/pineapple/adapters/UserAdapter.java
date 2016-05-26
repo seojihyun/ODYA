@@ -104,7 +104,7 @@ public class UserAdapter extends BaseAdapter {
         * */
 
         // 버튼 눌렀을때 선택된 제품명 출력하기
-        Button button = (Button) convertView.findViewById(R.id.button_user_profile);
+        ImageView button = (ImageView) convertView.findViewById(R.id.button_user_profile);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

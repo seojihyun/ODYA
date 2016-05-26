@@ -2,52 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#ffffff"
+        android:background="@drawable/border_shadow"
         android:layout_gravity="center">
-
-        <TextView
-            android:id="@+id/txt_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            android:background="#00a697" />
 
         <TextView
             android:id="@+id/txt_content"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="25sp"
-            android:background="#00a697" />
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/border_shadow_primary"
+            android:text="그룹 입장" />
 
-        <EditText
-            android:layout_width="match_parent"
+        <com.github.glomadrian.codeinputlib.CodeInput
+            android:layout_marginTop="20dp"
+            android:layout_width="291dp"
             android:layout_height="50dp"
-            android:inputType="textPassword|text"
-            android:ems="10"
             android:id="@+id/edit_password"
-            android:hint="password"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:background="@android:drawable/editbox_dropdown_light_frame"
-            android:textColor="#969696"
-            android:backgroundTint="@color/PrimaryColor"
-            android:layout_gravity="center" />
+            app:underline_color="#03A9F4"
+            app:underline_selected_color="#3F51B5"
+            app:text_color="#212121"
+            app:hint_color="#03A9F4"
+            app:hint_text="Password"
+            app:codes="8"
+            />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="25dp"
             android:textColor="@color/colorAccent"
             android:textSize="15dp"
-            android:text="@string/alert_password" />
+            android:text="@string/alert_password"
+            android:paddingLeft="10dp" />
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

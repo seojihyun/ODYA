@@ -11,6 +11,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.github.glomadrian.codeinputlib.CodeInput;
+
+import java.util.Arrays;
 
 import seojihyun.odya.pineapple.R;
 
@@ -19,7 +24,7 @@ public class EnterGroupDialog extends Dialog {
 
     private TextView mTitleView;
     private TextView mContentView;
-    private EditText password;
+    private CodeInput password;
     private Button mLeftButton;
     private Button mRightButton;
     private String mTitle;
@@ -41,13 +46,11 @@ public class EnterGroupDialog extends Dialog {
 
         setContentView(R.layout.dialog_enter_group);
 
-        mTitleView = (TextView) findViewById(R.id.txt_title);
-        password = (EditText) findViewById(R.id.edit_password);
+        password = (CodeInput) findViewById(R.id.edit_password);
         mLeftButton = (Button) findViewById(R.id.btn_left);
         mRightButton = (Button) findViewById(R.id.btn_right);
 
         // 제목과 내용을 생성자에서 셋팅한다.
-        mTitleView.setText(mTitle);
 
         // 클릭 이벤트 셋팅
         if (mLeftClickListener != null && mRightClickListener != null) {
@@ -68,12 +71,13 @@ public class EnterGroupDialog extends Dialog {
         this.mTitle = title;
         this.mLeftClickListener = singleListener;
     }
-
+Context context;
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
     public EnterGroupDialog(Context context, String title,
                             String content, View.OnClickListener leftListener,
                             View.OnClickListener rightListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        this.context = context;
         this.mTitle = title;
         this.mContent = content;
         this.mLeftClickListener = leftListener;
@@ -82,7 +86,8 @@ public class EnterGroupDialog extends Dialog {
 
     //입력한 비밀번호값 activity로 가져가기
     public String getPwd() {
-        String pwd = password.getText().toString();
+        String pwd = Arrays.toString(password.getCode());
+        Toast.makeText(context, "PWD : "+ pwd, Toast.LENGTH_SHORT).show();
         return pwd;
     }
 }
