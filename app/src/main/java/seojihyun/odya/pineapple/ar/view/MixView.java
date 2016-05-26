@@ -23,6 +23,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -62,6 +63,12 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
 
     DataManager dataManager;
 
+    //플래시
+    Camera camera;
+    private boolean isFlashOn;
+    private boolean hasFlash;
+    Camera.Parameters params;
+    MediaPlayer sound_flash;
     //2016-05-15
     private FrameLayout actionButtonLayout;
     ListView user_list;
@@ -423,17 +430,25 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
         FloatingActionButton exitButton = (FloatingActionButton) ar_ui.findViewById(R.id.ar_button_exit);
 
         /*초기 셋팅*/
-        //1. 플래시 사용 가능 여부
+        if(checkFlashLight()) {
+              /*클릭 리스너 부착*/
+            //1. 플래시 버튼 - 클릭시 처리 (서지현)
+            flashLightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mixContext, "flash 버튼 클릭!", Toast.LENGTH_SHORT).show();
+                    if(isFlashOn) {
+                        isFlashOn = false;
+                    } else { isFlashOn = true; }
+                    // 1. 버튼 사운드
+                    playSound();
+                    // 2. 플래시 상태 변경
+                    camScreen.setFlashLightMode();
 
+                }
+            });
+        }
 
-        /*클릭 리스너 부착*/
-        //1. 플래시 버튼 - 클릭시 처리 (서지현)
-        flashLightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mixContext, "flash 버튼 클릭!", Toast.LENGTH_SHORT).show();
-            }
-        });
         //2. 경보음 버튼 - 클릭시 처리 (서지현)
         beepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -453,7 +468,50 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
         addContentView(ar_ui, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
+    //플래시 사용 가능 여부 검사
+    public boolean checkFlashLight() {
+        /*
+        * First check if device is supporting flashlight or not
+        */
+        hasFlash = getApplicationContext().getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
+        if (!hasFlash) {
+            // device doesn't support flash
+            // Show alert message and close the application
+            AlertDialog alert = new AlertDialog.Builder(mixContext)
+                    .create();
+            alert.setTitle("Error");
+            alert.setMessage("Sorry, your device doesn't support flash light!");
+            alert.setButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // closing the application
+                    finish();
+                }
+            });
+            alert.show();
+            return false;
+        }
+        else return true;
+    }
+
+   //경보음
+   private void playSound(){
+       if(isFlashOn){
+           sound_flash = MediaPlayer.create(mixContext, R.raw.light_switch_off);
+       }else{
+           sound_flash = MediaPlayer.create(mixContext, R.raw.light_switch_on);
+       }
+       sound_flash.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+           @Override
+           public void onCompletion(MediaPlayer mp) {
+               // TODO Auto-generated method stub
+               mp.release();
+           }
+       });
+       sound_flash.start();
+   }
     //*********************************************************
     // 인텐트 제어
     private void handleIntent(Intent intent) {
@@ -1309,7 +1367,45 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
                 } catch (Exception ex) {    // 예외 발생시에도 디폴트 값으로...
                     parameters.setPreviewSize(480, 320);
                 }
+                /*플래시 관련*/
+                if(isFlashOn) {
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH); //서지현
+                }
+                else {
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                }
+                // ************
+                // 모든 값이 입력된 파라메터를 카메라에 적용하고
+                camera.setParameters(parameters);
+                camera.startPreview();    // 프리뷰를 시작한다
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        // 플래시 추가
+        public void setFlashLightMode() {
+            try {
+                // 일단 카메라의 파라메터 값들을 읽어온다
+                android.hardware.Camera.Parameters parameters = camera.getParameters();
+                    // 지원되는 카메라의 사이즈 리스트
+                    List<android.hardware.Camera.Size> supportedSizes = null;
 
+                    // 이하의 코드는 안드로이드 1.6버전 미만에서는 작동하지 않는다
+                    // 그럼에도 불구하고 카메라는 돌아가겠지만...
+
+                    // 파라메터로부터 지원되는 프리뷰 사이즈들을 읽어온다
+                    supportedSizes = Compatibility.getSupportedPreviewSizes(parameters);
+
+
+                    parameters.setPreviewSize(480, 320);
+                /*플래시 관련*/
+                if(isFlashOn) {
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH); //서지현
+                }
+                else {
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                }
+                // ************
                 // 모든 값이 입력된 파라메터를 카메라에 적용하고
                 camera.setParameters(parameters);
                 camera.startPreview();    // 프리뷰를 시작한다
