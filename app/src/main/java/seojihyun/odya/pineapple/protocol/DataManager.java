@@ -113,6 +113,7 @@ public class DataManager extends Application {
         //if(!activity.getClass().getSimpleName().equals("BackgroundActivity")) {
             // BackgroundActivity만 종료 하지 않음
             activity.finish();
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
        // }
 
     }

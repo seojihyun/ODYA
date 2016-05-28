@@ -86,7 +86,8 @@
 
         <activity
             android:name=".activities.LogoActivity"
-            android:label="@string/title_activity_logo">
+            android:label="@string/title_activity_logo"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

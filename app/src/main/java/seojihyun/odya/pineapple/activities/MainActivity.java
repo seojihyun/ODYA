@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
@@ -199,6 +200,13 @@ public class MainActivity extends AppCompatActivity {
         behavior.setHideable(false);
         */
 
+        // 색상 지정
+        //normal state color
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.findappleAccent)));
+        /// pressed state color
+        fab.setRippleColor(getResources().getColor(R.color.findappleAccent));
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -238,15 +246,15 @@ public class MainActivity extends AppCompatActivity {
         if (dataManager.userType) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("User Type")        // 제목 설정
-                    .setMessage("당신은 가이드 입니다")        // 메세지 설정
+                    .setMessage("가이드 입니다")        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("아니오", new DialogInterface.OnClickListener() {
                         // 확인 버튼 클릭시 설정
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.cancel();
                         }
                     })
-                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("네", new DialogInterface.OnClickListener() {
                         // 취소 버튼 클릭시 설정
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.cancel();
@@ -322,43 +330,46 @@ public class MainActivity extends AppCompatActivity {
 
         final TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
-
+        ImageView tabMap = new ImageView(this); // 탭버튼 초기 이미지 부여
+        tabMap.setImageResource(R.drawable.tab_map);
+        ImageView tabNo = new ImageView(this);
+        tabNo.setImageResource(R.drawable.tab_list);
+        ImageView tabNotice = new ImageView(this);
+        tabNotice.setImageResource(R.drawable.tab_notice);
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag1");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("MAP"); //탭버튼 클릭 시 이미지 변환
+        spec.setIndicator("", getDrawable(R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
         tabHost.addTab(spec); //탭호스트에 탭 추가
 
         spec = tabHost.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("USERS");
+        spec.setIndicator("", getDrawable(R.drawable.tab_list));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("tag3");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("NOTICE");
+        spec.setIndicator("", getDrawable(R.drawable.tab_notice));
         tabHost.addTab(spec);
 
         // tab1부분이 초기화면으로 설정
         tabHost.setCurrentTab(0);
 
+        //탭 색상
 /*
-        prevTab = tabHost.getCurrentTab();// Keep track of the default tab
-        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener(){ //tabhost is a variable of type TabHost, which will contain all your tabs
-            @Override
-            public void onTabChanged(String id) {
-                int tab = tabHost.getCurrentTab();
-                TextView tv = (TextView) tabHost.getTabWidget().getChildAt(tab).findViewById(android.R.id.title);
-                tv.setTextColor(Color.BLUE);//Set selected tab colour to something you want
+        TabWidget widget = tabHost.getTabWidget();
+        for(int i = 0; i < widget.getChildCount(); i++) {
+            View v = widget.getChildAt(i);
 
-                if(prevTab!=-1){// If there was a previously selected tab, set it back to a default colour as it is now unselected
-                    TextView tv1 = (TextView) tabHost.getTabWidget().getChildAt(prevTab).findViewById(android.R.id.title);
-                    tv1.setTextColor(Color.WHITE);
-                }
-                prevTab = tab; //Update this newly selected tab to the currently selected tab, for same logic to repeat for future tab changes
+            // Look for the title view to ensure this is an indicator and not a divider.
+            TextView tv = (TextView)v.findViewById(android.R.id.title);
+            if(tv == null) {
+                continue;
             }
-        });
-*/
+            v.setBackgroundResource(R.drawable.tab_selector);
+        }
+        */
+
     }
 
     // 2. 초기화 - 네비게이션 드로어 부분
@@ -728,7 +739,7 @@ public class MainActivity extends AppCompatActivity {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                //marker.showInfoWindow();
+                marker.showInfoWindow(); /// 2016-05-27
                 mMapInfoWindowAdapter.getInfoContents(marker);
                 return true;
             }
@@ -964,8 +975,8 @@ public class MainActivity extends AppCompatActivity {
         MapInfoWindowAdapter() {
             mapContentsView = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
             //custom infowindow 크기 지정 //레이아웃부분에서 적용이 안됨.(왜지)
-            mapContentsView.setMinimumHeight(300);
-            mapContentsView.setMinimumWidth(350);
+           // mapContentsView.setMinimumHeight(300);
+            mapContentsView.setMinimumWidth(100);
         }
 
         @Override
@@ -987,7 +998,6 @@ public class MainActivity extends AppCompatActivity {
                 TextView phone = (TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone);
                 Button button_ar = (Button) map_layout_profile.findViewById(R.id.button_infowindow_ar);
                 Button button_call = (Button) map_layout_profile.findViewById(R.id.button_infowindow_call);
-                layout_profile.setVisibility(View.VISIBLE);
                 //*************
 
                 final UserData focusUserData = mMarkersHashMap.get(marker);

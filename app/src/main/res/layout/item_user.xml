@@ -68,8 +68,8 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="53dp"
-        android:layout_height="56dp"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
         android:text="클릭"
         android:id="@+id/button_user_profile"
         android:layout_gravity="center"

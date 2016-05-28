@@ -36,6 +36,7 @@ import android.view.*;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,12 +44,14 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.srx.widget.TabBarView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,6 +72,14 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
     private boolean hasFlash;
     Camera.Parameters params;
     MediaPlayer sound_flash;
+
+    //소리 타입 - soundType
+    final int SOUND_FLASH = 1;
+    final int SOUND_BEEP = 2;
+
+    // 경보음
+    private boolean isBeepOn=false;
+
     //2016-05-15
     private FrameLayout actionButtonLayout;
     ListView user_list;
@@ -298,15 +309,20 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
             augScreen = new AugmentedView(this);
             setContentView(camScreen);    // 카메라 스크린을 컨텐트 뷰로 등록 후
 
+
+            maintainActionButton();
+
+
             // 증강 스크린을 덧씌워 준다
             addContentView(augScreen, new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
 
-            maintainMap(); //2016-05-06*********************** 서지현
+            //maintainMap(); //2016-05-06*********************** 서지현
 
 
-            maintainActionButton();
+            //setupMap();
+            //maintainActionButton();
 
             // maintainUserInfo(); //서지현
 
@@ -406,6 +422,22 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
         mapLayout.setLayoutParams(new FrameLayout.LayoutParams(300, 300, Gravity.RIGHT));
     }
 
+    public void setupMap() {
+        View ar_ui = getLayoutInflater().inflate(R.layout.ar_ui, null);
+
+        map = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map))
+                .getMap();
+        LatLng latLng = new LatLng(37.5122603, 126.75901939999994);
+        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        // Map을 zoom 합니다
+        map.animateCamera(CameraUpdateFactory.zoomTo(15));
+        //마커 추가해봄 2015-05-01
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(latLng);
+        marker.title("서지현");
+        //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin1));
+        map.addMarker(marker);
+    }
     //2016-05-06 User Info test
     public void maintainUserInfo() {
         if (userInfoLayout == null) {
@@ -425,11 +457,18 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
     public void maintainActionButton() {
         View ar_ui = getLayoutInflater().inflate(R.layout.ar_ui, null);
         //user_list = (ListView)findViewById(R.id.ar_user_list_view);
-        FloatingActionButton flashLightButton = (FloatingActionButton) ar_ui.findViewById(R.id.ar_button_flash);
-        FloatingActionButton beepButton = (FloatingActionButton) ar_ui.findViewById(R.id.ar_button_beep);
-        FloatingActionButton exitButton = (FloatingActionButton) ar_ui.findViewById(R.id.ar_button_exit);
+        //FloatingActionMenu menuButton = (FloatingActionMenu) ar_ui.findViewById(R.id.ar_menu_button);
+        ImageView flashLightButton = (ImageView) ar_ui.findViewById(R.id.ar_button_flash);
+        ImageView beepButton = (ImageView) ar_ui.findViewById(R.id.ar_button_beep);
+        ImageView exitButton = (ImageView) ar_ui.findViewById(R.id.ar_button_exit);
 
-        /*초기 셋팅*/
+        /*
+        *  초기 셋팅
+        *  1. 버튼 색상 지정
+        *  2. 각 버튼별 리스너 부착
+        *  3. setcontentView()
+        *  */
+
         if(checkFlashLight()) {
               /*클릭 리스너 부착*/
             //1. 플래시 버튼 - 클릭시 처리 (서지현)
@@ -437,11 +476,10 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(mixContext, "flash 버튼 클릭!", Toast.LENGTH_SHORT).show();
-                    if(isFlashOn) {
-                        isFlashOn = false;
-                    } else { isFlashOn = true; }
                     // 1. 버튼 사운드
-                    playSound();
+
+                    playSound(SOUND_FLASH);
+
                     // 2. 플래시 상태 변경
                     camScreen.setFlashLightMode();
 
@@ -454,6 +492,7 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
             @Override
             public void onClick(View v) {
                 Toast.makeText(mixContext, "경보음 버튼 클릭!", Toast.LENGTH_SHORT).show();
+                playSound(SOUND_BEEP);
             }
         });
         //3. 종료 버튼 - 클릭시 처리 (서지현)
@@ -463,6 +502,7 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
                 finish();
             }
         });
+
 
 
         addContentView(ar_ui, new FrameLayout.LayoutParams(
@@ -496,20 +536,45 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
     }
 
    //경보음
-   private void playSound(){
-       if(isFlashOn){
-           sound_flash = MediaPlayer.create(mixContext, R.raw.light_switch_off);
-       }else{
-           sound_flash = MediaPlayer.create(mixContext, R.raw.light_switch_on);
-       }
-       sound_flash.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+   private void playSound(int soundType){
+       switch (soundType) {
+           case SOUND_FLASH:
+               if(isFlashOn){
+                   sound_flash = MediaPlayer.create(mixContext, R.raw.light_switch_off);
+                   isFlashOn=false;
+               }else{
+                   sound_flash = MediaPlayer.create(mixContext, R.raw.light_switch_on);
+                   isFlashOn=true;
+               }
+               sound_flash.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-           @Override
-           public void onCompletion(MediaPlayer mp) {
-               // TODO Auto-generated method stub
-               mp.release();
-           }
-       });
+                   @Override
+                   public void onCompletion(MediaPlayer mp) {
+                       // TODO Auto-generated method stub
+                       mp.release();
+                   }
+               });
+               break;
+
+           case SOUND_BEEP:
+               if(isBeepOn) {
+                   sound_flash.stop();
+                   isBeepOn=false;
+               }else {
+                   sound_flash = MediaPlayer.create(mixContext, R.raw.beep);
+                   sound_flash.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                       @Override
+                       public void onCompletion(MediaPlayer mp) {
+                           // TODO Auto-generated method stub
+                           mp.release();
+                       }
+                   });
+                   isBeepOn=true;
+               }
+               break;
+       }
+
        sound_flash.start();
    }
     //*********************************************************

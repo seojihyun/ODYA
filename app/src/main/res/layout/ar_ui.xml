@@ -5,31 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.clans.fab.FloatingActionMenu
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom">
-        <com.github.clans.fab.FloatingActionButton
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="69dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|top"
+        android:background="#b9656565"
+        android:alpha="50"
+        android:gravity="bottom">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/ar_button_beep"
-            android:layout_width="wrap_content"
+            android:src="@drawable/ar_button_beep" />
+
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_lock_idle_alarm"
-            fab:fab_label="경보음"
-            style="@style/MenuButtonsStyle" />
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/ar_button_flash"
-            android:layout_width="wrap_content"
+            android:src="@drawable/ar_button_flashlight" />
+
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/stat_notify_error"
-            fab:fab_label="플래시"
-            style="@style/MenuButtonsStyle" />
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/ar_button_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_close"
-            fab:fab_label="종료 하기"
-            style="@style/MenuButtonsStyle" />
-    </com.github.clans.fab.FloatingActionMenu>
+            android:src="@drawable/ar_button_exit" />
+
+    </LinearLayout>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ar_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="right|top"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp" />
+
 
 </FrameLayout>

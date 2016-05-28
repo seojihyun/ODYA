@@ -2,6 +2,7 @@ package seojihyun.odya.pineapple.ar.gui;
 
 import android.graphics.Color;
 
+import seojihyun.odya.pineapple.R;
 import seojihyun.odya.pineapple.ar.view.DataView;
 import seojihyun.odya.pineapple.ar.view.Marker;
 import seojihyun.odya.pineapple.ar.data.DataHandler;
@@ -16,9 +17,10 @@ public class RadarPoints implements ScreenObj {
 
     public DataView view;	// 스크린 뷰
     float range;	// 레이더의 각도
-    public static float RADIUS = 40;	// 스크린 픽셀의 각도. 기본 40도
+    public static float RADIUS = 70;	// 스크린 픽셀의 각도. 기본 40도 - 서지현 (레이더의 반지름)
     static float originX = 0 , originY = 0;	// 스크린상의 좌표
     static int radarColor = Color.argb(100, 0, 0, 200);	// 색상. 기본은 약간 푸른색
+
 
     // 실제 출력을 담당하는 메소드
     public void paint(PaintScreen dw) {

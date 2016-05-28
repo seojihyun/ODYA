@@ -18,9 +18,10 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"
             />
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="2dp"
             android:background="@drawable/shadow" />
 
         <FrameLayout
@@ -45,8 +46,10 @@
                         android:tabStripEnabled="false"
                         android:touchscreenBlocksFocus="false"
                         android:focusable="false"
+                        android:showDividers="end"
                         android:background="#ffffff"
-                        android:showDividers="end">
+                        android:paddingTop="5dp"
+                        android:paddingBottom="2dp">
                     </TabWidget>
 
                     <FrameLayout
@@ -67,6 +70,7 @@
                                 android:layout_height="match_parent"
                                 android:fitsSystemWindows="true"
                                 tools:context="seojihyun.odya.seodesign.MainActivity">
+
                                 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                     android:layout_height="match_parent" android:id="@+id/map"
@@ -74,23 +78,22 @@
                                     android:name="com.google.android.gms.maps.SupportMapFragment" />
 
                                 <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="새로고침"
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
                                     android:id="@+id/button_map_setting"
                                     android:layout_alignParentTop="true"
                                     android:layout_alignParentEnd="true"
-                                    android:onClick="onClick" />
+                                    android:onClick="onClick"
+                                    android:background="@android:drawable/ic_menu_mylocation" />
                                 <LinearLayout
                                     android:id="@+id/layout_map_profile"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/border_primary"
+                                    android:background="@color/colorPrimary"
                                     android:orientation="vertical"
                                     app:behavior_peekHeight="40dp"
                                     app:behavior_hideable="false"
-                                    app:layout_behavior="@string/bottom_sheet_behavior"
-                                    android:layout_margin="5dp">
+                                    app:layout_behavior="@string/bottom_sheet_behavior">
 
                                     <TextView
                                         android:layout_width="386dp"
@@ -99,9 +102,8 @@
                                         android:gravity="center_vertical"
                                         android:lines="1"
                                         android:maxLines="1"
-                                        android:text="  유저 정보"
-                                        android:textAppearance="?android:attr/textAppearanceMedium"
-                                        android:textColor="#ffffff" />
+                                        android:text="    사용자 정보"
+                                        android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                     <include
                                         layout="@layout/maptab_user_info"
@@ -136,7 +138,7 @@
                                 android:id="@+id/list_user"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="#ffffff"
+                                android:background="@color/findappleBase"
                                 android:choiceMode="singleChoice"
                                 android:divider="@android:color/transparent"
                                 android:dividerHeight="1dp" />
@@ -152,7 +154,8 @@
                                 android:id="@+id/list_notice"
                                 style="@style/Widget.MaterialSheetFab.Note.List"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
-                                android:paddingBottom="@dimen/note_spacing" />
+                                android:paddingBottom="@dimen/note_spacing"
+                                android:background="@color/PrimaryColor" />
 
                             <com.github.clans.fab.FloatingActionMenu
                                 android:layout_width="wrap_content"
@@ -193,6 +196,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/header"
         app:menu="@menu/menu_drawer"
-        android:background="#ffffff">
+        android:background="@color/findappleBase">
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

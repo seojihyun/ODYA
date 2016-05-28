@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#80cbc4</color>
-    <color name="colorPrimaryDark">#4fc2e8</color>
-    <color name="colorAccent">#ff876d</color>
+    <color name="colorPrimary">#00b5a9</color>
+    <color name="colorPrimaryShadow">#70afa9</color>
+    <color name="colorPrimaryDark">#656565</color>
+    <color name="colorAccent">#9a9a9a</color>
     <color name="colorBottomSheetBackground">#e4e4e4</color>
-    <color name="findappleBase">#48d1cc</color>
+    <color name="findappleBase">#d4d4d4</color>
+    <color name="findappleAccent">#f67947</color>
 
     <color name="PrimaryColor">#b6b6b6</color>
     <color name="PrimaryDarkColor">#FFA5A5A5</color>
@@ -26,14 +28,14 @@
     <color name="theme_primary_dark2">#006064</color>
     <color name="theme_accent">#FFEB3B</color>
 
-    <color name="background_card">#fff</color>
+    <color name="background_card">#5a7370</color>
     <color name="background_snackbar">#323232</color>
 
     <color name="text_black_87">#de000000</color>
-    <color name="text_white_87">#deFFFFFF</color>
+    <color name="text_white_87">#455A64</color>
 
     <array name="note_neutral_colors">
-        <item>#9E9E9E</item>
+        <item>#ffffff</item>
     </array>
 
     <array name="note_accent_colors">

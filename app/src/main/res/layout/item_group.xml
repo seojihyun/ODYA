@@ -11,8 +11,7 @@
         android:layout_height="match_parent"
         android:layout_weight="4"
         android:paddingLeft="10dp"
-        android:gravity="center_vertical"
-        android:background="#ffffff">
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,6 +37,5 @@
         android:src="@drawable/button_enter_group"
         android:id="@+id/button_enter_group"
         android:layout_weight="1"
-        android:layout_gravity="center"
-        android:background="#ffffff" />
+        android:layout_gravity="center" />
 </LinearLayout>

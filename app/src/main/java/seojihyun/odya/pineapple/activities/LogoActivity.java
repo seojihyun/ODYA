@@ -1,5 +1,7 @@
 package seojihyun.odya.pineapple.activities;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -27,13 +29,8 @@ public class LogoActivity extends AppCompatActivity {
         dataManager.setActivity(this);
 
 
-        //네트워크 검사
-
-
-        // 리스너 부착
-       // a.setOnClickListener(this);
-        //User정보 존재 여부 확인 - phone 번호로 조회
     }
+
     public void onClick(View v) {
         try {// checkID 를 위한 단말기 전화번호 얻어오기
             //TelephonyManager telManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);

@@ -113,7 +113,7 @@ public class DataView {
     private RadarPoints radarPoints = new RadarPoints();
     private ScreenLine lrl = new ScreenLine();
     private ScreenLine rrl = new ScreenLine();
-    private float rx = 10, ry = 20;
+    private float rx = 20, ry = 60; //서지현
     private float addX = 0, addY = 0;
 
 
