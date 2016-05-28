@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -63,11 +65,39 @@ import seojihyun.odya.pineapple.protocol.NoticeData;
 import seojihyun.odya.pineapple.protocol.Protocol;
 import seojihyun.odya.pineapple.protocol.UserData;
 
+//네비게이션 드로어 관련
+
+import com.mikepenz.crossfadedrawerlayout.view.CrossfadeDrawerLayout;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.MiniDrawer;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.interfaces.ICrossfader;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.mikepenz.materialdrawer.util.DrawerUIUtils;
+import com.mikepenz.materialize.util.UIUtils;
+
+
+
 import static seojihyun.odya.pineapple.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 
 public class MainActivity extends AppCompatActivity {
 
     private DataManager dataManager;
+
+    /*네비게이션 드로어 관련 변수 - new */
+    //save our header or result
+    private AccountHeader headerResult = null;
+    private Drawer result = null;
+    private CrossfadeDrawerLayout crossfadeDrawerLayout = null;
 
     /* 탭 관련 변수 */
     TabHost mtabHost;
@@ -240,8 +270,8 @@ public class MainActivity extends AppCompatActivity {
         //2016-05-22 UI 관련 - 서지현
         initBottomSheet();
 
-
-
+        // new - 네비게이션 드로어 재디자인
+        initNavigationDrawer(savedInstanceState);
 
         if (dataManager.userType) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -286,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 1. 네비게이션 드로어 초기화
-        initDrawer();
+        //initDrawer();
         // 2. 탭호스트 부분 초기화
         initTabHost();
         // 3. list 탭 부분 초기화
@@ -322,7 +352,109 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // new - 네비게이션 드로어 초기화
+    public void initNavigationDrawer(Bundle savedInstanceState) {
+        // Handle Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //set the back arrow in the toolbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("파인애플");
 
+        // Create a few sample profile
+        // NOTE you have to define the loader logic too. See the CustomApplication for more details
+        final IProfile profile = new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460");
+        final IProfile profile2 = new ProfileDrawerItem().withName("Bernat Borras").withEmail("alorma@github.com").withIcon(Uri.parse("https://avatars3.githubusercontent.com/u/887462?v=3&s=460"));
+
+        // Create the AccountHeader
+        headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.header)
+                .addProfiles(
+                        profile, profile2
+                )
+                .withSavedInstance(savedInstanceState)
+                .build();
+
+        //Create the drawer
+        result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withHasStableIds(true)
+                .withDrawerLayout(R.layout.crossfade_drawer)
+                .withDrawerWidthDp(72)
+                .withGenerateMiniDrawer(true)
+                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName("HOME").withIcon(R.drawable.drawer_home).withIdentifier(1),
+                        new PrimaryDrawerItem().withName("가이드").withIcon(R.drawable.drawer_guide).withBadge("guide").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(2).withSelectable(false),
+                        new PrimaryDrawerItem().withName("목적지").withIcon(R.drawable.drawer_destination).withIdentifier(3),
+                        new PrimaryDrawerItem().withName("일행추적").withIcon(R.drawable.drawer_guide).withBadge("all").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(4),
+                        new PrimaryDrawerItem().withDescription("A more complex sample").withName("두번째줄").withIcon(R.drawable.drawer_mygroup).withIdentifier(5),
+                        new PrimaryDrawerItem().withName("모두추적").withIcon(R.drawable.drawer_guide).withBadge("22").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(3).withIdentifier(6),
+                        new SectionDrawerItem().withName("섹션 헤더"),
+                        new SecondaryDrawerItem().withName("open Source").withIcon(R.drawable.drawer_mygroup),
+                        new SecondaryDrawerItem().withName("Contact").withIcon(R.drawable.drawer_exit).withTag("Bullhorn")
+                ) // add the items we want to use with our Drawer
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (drawerItem instanceof Nameable) {
+                            Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+                        }
+                        //we do not consume the event and want the Drawer to continue with the event chain
+                        return false;
+                    }
+                })
+                .withSavedInstance(savedInstanceState)
+                .withShowDrawerOnFirstLaunch(true)
+                .withSliderBackgroundColor(getResources().getColor(R.color.findappleBase)) // 네비게이션 드로어 배경 색깔
+                .build();
+
+
+        //get the CrossfadeDrawerLayout which will be used as alternative DrawerLayout for the Drawer
+        //the CrossfadeDrawerLayout library can be found here: https://github.com/mikepenz/CrossfadeDrawerLayout
+        crossfadeDrawerLayout = (CrossfadeDrawerLayout) result.getDrawerLayout();
+
+        //define maxDrawerWidth
+        crossfadeDrawerLayout.setMaxWidthPx(DrawerUIUtils.getOptimalDrawerWidth(this));
+        //add second view (which is the miniDrawer)
+        final MiniDrawer miniResult = result.getMiniDrawer();
+        //build the view for the MiniDrawer
+        View view = miniResult.build(this);
+        //set the background of the MiniDrawer as this would be transparent
+        view.setBackgroundColor(getResources().getColor(R.color.findappleBackground)); // 네비게이션드로어 배경 색깔
+        //we do not have the MiniDrawer view during CrossfadeDrawerLayout creation so we will add it here
+        crossfadeDrawerLayout.getSmallView().addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        //define the crossfader to be used with the miniDrawer. This is required to be able to automatically toggle open / close
+        miniResult.withCrossFader(new ICrossfader() {
+            @Override
+            public void crossfade() {
+                boolean isFaded = isCrossfaded();
+                crossfadeDrawerLayout.crossfade(400);
+
+                //only close the drawer if we were already faded and want to close it now
+                if (isFaded) {
+                    result.getDrawerLayout().closeDrawer(GravityCompat.START);
+                }
+            }
+
+            @Override
+            public boolean isCrossfaded() {
+                return crossfadeDrawerLayout.isCrossfaded();
+            }
+        });
+
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //add the values which need to be saved from the drawer to the bundle
+        outState = result.saveInstanceState(outState);
+        //add the values which need to be saved from the accountHeader to the bundle
+        outState = headerResult.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
 
 
     // 1. 초기화 - 탭호스트부분
@@ -372,127 +504,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // 2. 초기화 - 네비게이션 드로어 부분
-    public void initDrawer() {
-        // Initializing Toolbar and setting it as the actionbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        //Initializing NavigationView
-
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-
-        /* 2016-05-16 서지현
-        // 네비게이션 드로어 안에 user List 부착
-        userListDrawer = (ListView) findViewById(R.id.navigation_list);
-
-        userAdapter = new UserAdapter(this, R.layout.item_user, dataManager.users, dataManager); //서지현
-        userListDrawer.setAdapter(userAdapter); 삭제
-        //데이터가 변했을때 호출
-        userAdapter.notifyDataSetChanged();
-        */
-        ////////
-
-        //View header = LayoutInflater.from(this).inflate(R.layout.header, null); 2016-05-15 서지현 네비게이션 헤더 부분 수정 삭제
-        //navigationView.addHeaderView(header);
-
-        TextView user_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_user_name);
-        TextView user_phone = (TextView)navigationView.getHeaderView(0).findViewById(R.id.header_user_phone);
-
-        user_name.setText(dataManager.userData.getUser_name());
-        user_phone.setText(dataManager.userData.getUser_phone());
-
-        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-
-            // This method will trigger on item Click of navigation menu
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-
-                //Checking if the item is in checked state or not, if not make it in checked state
-                if (menuItem.isChecked()) menuItem.setChecked(false);
-                else menuItem.setChecked(true);
-
-                //Closing drawer on item click
-                drawerLayout.closeDrawers();
-
-                //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId()) {
-
-                    case R.id.navigation_item_home:
-                        Toast.makeText(getApplicationContext(), "Home Selected", Toast.LENGTH_SHORT).show();
-                        return true;
-                    case R.id.navigation_item_notice:
-                        Toast.makeText(getApplicationContext(), "notice Selected", Toast.LENGTH_SHORT).show();
-                        return true;
-                    case R.id.navigation_item_setting:
-                        Toast.makeText(getApplicationContext(), "setting Selected", Toast.LENGTH_SHORT).show();
-                        return true;
-
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
-                    //case R.id.inbox:
-                    //Toast.makeText(getApplicationContext(),"Inbox Selected",Toast.LENGTH_SHORT).show();
-                    //ContentFragment fragment = new ContentFragment();
-                    //android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    //fragmentTransaction.replace(R.id.frame,fragment);
-                    //fragmentTransaction.commit();
-                    // return true;
-
-                    // For rest of the options we just show a toast on click
-
-                    //case R.id.starred:
-                    //   Toast.makeText(getApplicationContext(),"Stared Selected",Toast.LENGTH_SHORT).show();
-                    //   return true;
-                    //case R.id.sent_mail:
-                    // Toast.makeText(getApplicationContext(),"Send Selected",Toast.LENGTH_SHORT).show();
-                    // return true;
-                    // case R.id.drafts:
-                    // Toast.makeText(getApplicationContext(),"Drafts Selected",Toast.LENGTH_SHORT).show();
-                    // return true;
-                    //case R.id.allmail:
-                    //Toast.makeText(getApplicationContext(),"All Mail Selected",Toast.LENGTH_SHORT).show();
-                    //return true;
-                    //case R.id.trash:
-                    //Toast.makeText(getApplicationContext(),"Trash Selected",Toast.LENGTH_SHORT).show();
-                    //return true;
-                    //case R.id.spam:
-                    // Toast.makeText(getApplicationContext(),"Spam Selected",Toast.LENGTH_SHORT).show();
-                    //return true;
-                    default:
-                        Toast.makeText(getApplicationContext(), "Somethings Wrong", Toast.LENGTH_SHORT).show();
-                        return true;
-
-                }
-            }
-        });
-
-        // Initializing Drawer Layout and ActionBarToggle
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-
-                super.onDrawerOpened(drawerView);
-            }
-        };
-
-        //Setting the actionbarToggle to drawer layout
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-
-
-        //calling sync state is necessay or else your hamburger icon wont show up
-        actionBarDrawerToggle.syncState();
-
-    }
 
     // 3. 초기화 - list 탭 부분
     public void initList() {
@@ -1079,6 +1090,15 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();    // 알림창 객체 생성
         dialog.show();    // 알림창 띄우기
         //super.onBackPressed();
+
+
+        // new - 네비게이션 드로어
+        //handle the back press :D close the drawer first and if the drawer is closed close the activity
+        if (result != null && result.isDrawerOpen()) {
+            result.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     // 2016-05-09 서지현

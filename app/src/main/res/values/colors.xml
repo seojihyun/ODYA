@@ -5,8 +5,10 @@
     <color name="colorPrimaryDark">#656565</color>
     <color name="colorAccent">#9a9a9a</color>
     <color name="colorBottomSheetBackground">#e4e4e4</color>
+
     <color name="findappleBase">#d4d4d4</color>
     <color name="findappleAccent">#f67947</color>
+    <color name="findappleBackground">#1d1d29</color>
 
     <color name="PrimaryColor">#b6b6b6</color>
     <color name="PrimaryDarkColor">#FFA5A5A5</color>

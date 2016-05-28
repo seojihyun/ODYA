@@ -9,7 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/codeinputlib" />
             <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/material-sheet-fab" />
             <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
@@ -17,7 +19,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/codeinputlib" />
             <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/material-sheet-fab" />
             <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
