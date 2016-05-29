@@ -226,6 +226,7 @@ public class DataView {
         // 카메라 객체의 회전행렬로 장치각과 방위각을 계산
         state.calcPitchBearing(cam.transform);
 
+        // URL 시작 - 서지현
         // Load Layer
         // 아직 시작되지 않은 상태이고, 데이터 뷰가 얼어있지 않은 경우
         if (state.nextLStatus == MixState.NOT_STARTED && !frozen) {
@@ -250,7 +251,7 @@ public class DataView {
                     // 선택된 데이터 소스로 데이터 요청을 한다
                     if(mixContext.isDataSourceSelected(source)) {
                         //2016-05-15 서지현
-                        requestData(DataSource.createRequestURL(source,lat,lon,alt,radius,Locale.getDefault().getLanguage(), SharedPreferencesManager.getPreferences(getContext(), "group_name") ,SharedPreferencesManager.getPreferences(getContext(), "user_phone_to_track")),DataSource.dataFormatFromDataSource(source),source);
+                        requestData(DataSource.createRequestURL(source,lat,lon,alt,radius,Locale.getDefault().getLanguage(), SharedPreferencesManager.getPreferences(getContext(), "group_name") ,SharedPreferencesManager.getPreferences(getContext(), "user_phone_to_track"), SharedPreferencesManager.getPreferences(getContext(), "track_type")),DataSource.dataFormatFromDataSource(source),source);
 
                         // Debug notification
                         // Toast.makeText(mixContext, "Downloading from "+ source, Toast.LENGTH_SHORT).show();

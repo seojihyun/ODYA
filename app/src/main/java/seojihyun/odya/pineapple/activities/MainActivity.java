@@ -220,40 +220,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         dataManager.setActivity(this);
     }
-    public void initBottomSheet() {
-        // 1 . bottom _ sheet 설정
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
-        /* 레아이웃에 설정 되어있음
-        behavior.setPeekHeight((int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 72.f, getResources().getDisplayMetrics()));
-        behavior.setHideable(false);
-        */
-
-        // 색상 지정
-        //normal state color
-        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.findappleAccent)));
-        /// pressed state color
-        fab.setRippleColor(getResources().getColor(R.color.findappleAccent));
-
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
-                switch(behavior.getState()) {
-                    case BottomSheetBehavior.STATE_EXPANDED:// if bottom_sheet is opened
-                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                        break;
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        break;
-                    // if bottom_sheet is closed
-                }
-
-            }
-        });
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -352,31 +318,69 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    // BottomSheet 초기화
+    public void initBottomSheet() {
+        // 1 . bottom _ sheet 설정
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
+        /* 레아이웃에 설정 되어있음
+        behavior.setPeekHeight((int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 72.f, getResources().getDisplayMetrics()));
+        behavior.setHideable(false);
+        */
+
+        // 색상 지정
+        //normal state color
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.findappleAccent)));
+        /// pressed state color
+        fab.setRippleColor(getResources().getColor(R.color.findappleAccent));
+
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.layout_map_profile));
+                switch(behavior.getState()) {
+                    case BottomSheetBehavior.STATE_EXPANDED:// if bottom_sheet is opened
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        break;
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        break;
+                    // if bottom_sheet is closed
+                }
+
+            }
+        });
+    }
+
     // new - 네비게이션 드로어 초기화
     public void initNavigationDrawer(Bundle savedInstanceState) {
         // Handle Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //set the back arrow in the toolbar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // <- =
         getSupportActionBar().setTitle(dataManager.userData.getGroup_name()); // 타이틀 그룹명으로 지정
 
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
-        final IProfile profile = new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460");
-        final IProfile profile2 = new ProfileDrawerItem().withName("Bernat Borras").withEmail("alorma@github.com").withIcon(Uri.parse("https://avatars3.githubusercontent.com/u/887462?v=3&s=460"));
+        final IProfile profile = new ProfileDrawerItem()
+                .withName(dataManager.userData.getUser_name())
+                .withEmail(dataManager.userData.getUser_phone())
+                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460");
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
+                .withHeaderBackground(R.color.findappleBase)
                 .withTranslucentStatusBar(true)
                 .addProfiles(
-                        profile, profile2
+                        profile
                 )
-                .withSavedInstance(savedInstanceState)
                 .build();
-        
+
         //Create the drawer
         result = new DrawerBuilder()
                 .withActivity(this)
@@ -384,27 +388,30 @@ public class MainActivity extends AppCompatActivity {
                 .withRootView(R.id.main_frame)
                 .withActionBarDrawerToggleAnimated(true)
                 .withHasStableIds(true)
-                .withTranslucentStatusBar(true)
                 .withDrawerLayout(R.layout.crossfade_drawer)
                 .withDrawerWidthDp(72)
                 .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("HOME").withIcon(R.drawable.drawer_home).withIdentifier(1),
-                        new PrimaryDrawerItem().withName("가이드").withIcon(R.drawable.drawer_guide).withBadge("guide").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(2).withSelectable(false),
-                        new PrimaryDrawerItem().withName("목적지").withIcon(R.drawable.drawer_destination).withIdentifier(3),
-                        new PrimaryDrawerItem().withName("일행추적").withIcon(R.drawable.drawer_guide).withBadge("all").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(4),
-                        new PrimaryDrawerItem().withDescription("A more complex sample").withName("두번째줄").withIcon(R.drawable.drawer_mygroup).withIdentifier(5),
-                        new PrimaryDrawerItem().withName("모두추적").withIcon(R.drawable.drawer_guide).withBadge("22").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(3).withIdentifier(6),
-                        new SectionDrawerItem().withName("섹션 헤더"),
-                        new SecondaryDrawerItem().withName("open Source").withIcon(R.drawable.drawer_mygroup),
-                        new SecondaryDrawerItem().withName("Contact").withIcon(R.drawable.drawer_exit).withTag("Bullhorn")
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_home)).withIcon(R.drawable.drawer_home).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_guide)).withIcon(R.drawable.drawer_guide).withBadge("guide").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(2).withSelectable(false),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_destination)).withIcon(R.drawable.drawer_destination).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_all)).withIcon(R.drawable.drawer_guide).withBadge("all").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(4),
+                        //new PrimaryDrawerItem().withDescription("A more complex sample").withName("두번째줄").withIcon(R.drawable.drawer_mygroup).withIdentifier(5),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_party)).withIcon(R.drawable.drawer_guide).withBadge("22").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(3).withIdentifier(6),
+                        new SectionDrawerItem().withName("나의 일행 리스트"),
+                        //new SecondaryDrawerItem().withName("open Source").withIcon(R.drawable.drawer_mygroup),
+                        new SecondaryDrawerItem().withName(getString(R.string.drawer_item_exit)).withIcon(R.drawable.drawer_exit).withTag("Bullhorn")
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
                             Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+
+                            // 버튼별 액션 처리
+                            setNavigationAction(view, position, drawerItem);
+
                         }
                         //we do not consume the event and want the Drawer to continue with the event chain
                         return false;
@@ -453,6 +460,77 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    // 네비게이션 드로어 - 버튼 액션 처리
+    public void setNavigationAction(View view, int position, IDrawerItem drawerItem) {
+        Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+        String itemName =  ((Nameable) drawerItem).getName().getText(MainActivity.this);
+         if(itemName == getString(R.string.drawer_item_home)) {
+
+         } else if(itemName ==  getString(R.string.drawer_item_guide)) {
+             setARConnection(getString(R.string.track_type_guide), dataManager.groupData.getUser_phone(), dataManager.groupData.getUser_name());
+
+         }  else if(itemName ==  getString(R.string.drawer_item_destination)) {
+             setARConnection(getString(R.string.track_type_destination), "", "");
+
+         }  else if(itemName ==  getString(R.string.drawer_item_all)) {
+
+         }  else if(itemName ==  getString(R.string.drawer_item_party)) {
+
+         }  else if(itemName ==  getString(R.string.drawer_item_exit)) {
+             exitGroup();
+         } else { // 특정 일행 인경우**
+             // 이때 itemName은 일행의 이름 drawerItem의 identifier 사용해서 추적하기
+             //String user_phone = Long.toString(drawerItem.getIdentifier()); //사용자 전화번호
+
+             String user_name = itemName;
+             UserData userObj = dataManager.findUser(user_name); // 전화번호로 사용자 찾기 -> 주의!!
+             if(userObj != null) { // 사용자가 존재하는 경우 액션 처리
+                 focusMarker(userObj);
+             }
+         }
+
+    }
+
+    // 네비게이션 기능 - 1. 일행 리스트에서 일행 추가
+    public void insertPartyMember(UserData user) {
+
+        result.addItem(new SecondaryDrawerItem()
+                .withDescription(user.getUser_phone())
+                .withName(user.getUser_name())
+                .withIdentifier(Long.parseLong(user.getUser_phone())) // map focus에 사용
+                .withIcon(R.drawable.pin1));
+    }
+
+    // 네비게이션 기능 - 2. 일행 리스트에서 일행 삭제
+    public void removePartyMember(UserData user) {
+        result.removeItem(Long.parseLong(user.getUser_phone()));
+    }
+
+    // 네비게이션 기능 - 3. 그룹나가기
+    public void exitGroup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("종료 확인 대화 상자")        // 제목 설정
+                .setMessage("그룹을 나가시 겠습니까?")        // 메세지 설정
+                .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
+                .setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                    // 확인 버튼 클릭시 설정
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        //finish();
+                        dataManager.command(Protocol.URL_EXIT_GROUP, dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), dataManager.userData.getLatitude(), dataManager.userData.getLongitude(), dataManager.userData.getGroup_name());
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                    // 취소 버튼 클릭시 설정
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //add the values which need to be saved from the drawer to the bundle
@@ -477,17 +555,20 @@ public class MainActivity extends AppCompatActivity {
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag1");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("", getDrawable(R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
+        //spec.setIndicator("list");
+        spec.setIndicator("map", getResources().getDrawable(R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
         tabHost.addTab(spec); //탭호스트에 탭 추가
 
         spec = tabHost.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("", getDrawable(R.drawable.tab_list));
+        //spec.setIndicator("list");
+        spec.setIndicator("list", getResources().getDrawable(R.drawable.tab_map));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("tag3");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("", getDrawable(R.drawable.tab_notice));
+        spec.setIndicator("notice", getResources().getDrawable(R.drawable.tab_map));
+        //spec.setIndicator("notice");
         tabHost.addTab(spec);
 
         // tab1부분이 초기화면으로 설정
@@ -1039,18 +1120,10 @@ public class MainActivity extends AppCompatActivity {
                         String user_phone_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone)).getText().toString();
                         String user_name_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_name)).getText().toString();
 
-                        //2016-05-15서지현
-                        SharedPreferencesManager.savePreferences(getApplicationContext(), "group_name", dataManager.groupData.getGroup_name());
-                        SharedPreferencesManager.savePreferences(getApplicationContext(), "user_phone_to_track", user_phone_to_track);
-                        // ****끝
-                        Toast.makeText(
-                                getApplicationContext(),
-                                user_name_to_track + "님의 위치 추적(AR)",
-                                Toast.LENGTH_LONG).show();
 
-                        Intent intent = new Intent(getApplicationContext(), MixView.class);
-                        startActivity(intent);
-                        //finish(); 2016-05-24 서지현 삭제
+                        //2016-05-29 서지현 - AR연결 셋팅 (user 타입)
+                        setARConnection(getString(R.string.track_type_user), user_phone_to_track, user_name_to_track);
+
                     }
                 });
                 button_call.setOnClickListener(new View.OnClickListener() {
@@ -1078,36 +1151,49 @@ public class MainActivity extends AppCompatActivity {
 
     }// end CustomInfoWindow Adapter
 
+    public void setARConnection(String track_type, String user_phone_to_track, String user_name_to_track) {
+        if(track_type == getString(R.string.track_type_user)) { // 특정 유저 추적 : group_name과 user_phone, track_type 필요
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.group_name), dataManager.groupData.getGroup_name());
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.user_phone_to_track), user_phone_to_track);
+            // ar - 위치 추적 타입 설정 (track_type 설정)
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.track_type), getString(R.string.track_type_user));
+
+        } else if(track_type == getString(R.string.track_type_destination)) { // 목적지 추적 : group_name 과 track_type 필요
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.group_name), dataManager.groupData.getGroup_name());
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.user_phone_to_track), user_phone_to_track);
+            // ar - 위치 추적 타입 설정 (track_type 설정)
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.track_type), getString(R.string.track_type_destination));
+        } else if(track_type == getString(R.string.track_type_all)) { // 그룹 전원 추적 : group_name과 track_type 필요
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.group_name), dataManager.groupData.getGroup_name());
+            // ar - 위치 추적 타입 설정 (track_type 설정)
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.track_type), getString(R.string.track_type_all));
+        } else if(track_type == getString(R.string.track_type_guide)) { // 가이드만 추적 : group_name과 track_type필요 or User_phone도 ..
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.group_name), dataManager.groupData.getGroup_name());
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.user_phone_to_track), user_phone_to_track);
+            // ar - 위치 추적 타입 설정 (track_type 설정)
+            SharedPreferencesManager.savePreferences(getApplicationContext(), getString(R.string.track_type), getString(R.string.track_type_guide));
+        } else if(track_type == getString(R.string.track_type_party)) { // 일행만 추적 : ..
+
+        }
+
+
+        // ****끝
+        Toast.makeText(
+                getApplicationContext(),
+                user_name_to_track + "님의 위치 추적(AR)",
+                Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(getApplicationContext(), MixView.class);
+        startActivity(intent);
+        //finish(); 2016-05-24 서지현 삭제
+    }
+
 
     // 뒤로가기 버튼 클릭시 처리
     @Override
     public void onBackPressed() {
         Toast.makeText(this, "Back button pressed.", Toast.LENGTH_SHORT).show();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("종료 확인 대화 상자")        // 제목 설정
-                .setMessage("그룹을 나가시 겠습니까?")        // 메세지 설정
-                .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
-                .setPositiveButton("확인", new DialogInterface.OnClickListener(){
-                    // 확인 버튼 클릭시 설정
-                    public void onClick(DialogInterface dialog, int whichButton){
-                        //finish();
-                        dataManager.command(Protocol.URL_EXIT_GROUP, dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), dataManager.userData.getLatitude(), dataManager.userData.getLongitude(), dataManager.userData.getGroup_name());
-                    }
-                })
-                .setNegativeButton("취소", new DialogInterface.OnClickListener(){
-                    // 취소 버튼 클릭시 설정
-                    public void onClick(DialogInterface dialog, int whichButton){
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog dialog = builder.create();    // 알림창 객체 생성
-        dialog.show();    // 알림창 띄우기
-        //super.onBackPressed();
-
-
-
+        exitGroup();
     }
 
     // 2016-05-09 서지현

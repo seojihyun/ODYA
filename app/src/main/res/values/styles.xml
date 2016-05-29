@@ -5,7 +5,6 @@
     <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 

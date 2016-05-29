@@ -9,6 +9,24 @@
     <string name="user_phone">user_phone</string>
     <string name="group_name">group_name</string>
 
+    <!-- 기타 Shared Preferences 관련 -->
+    <string name="track_type">track_type</string>
+    <string name="user_phone_to_track">user_phone_to_track</string>
+    <string name="track_type_user">user</string>
+    <string name="track_type_destination">destination</string>
+    <string name="track_type_all">all</string>
+    <string name="track_type_guide">guide</string>
+    <string name="track_type_party">party</string>
+
+    <!-- 네비게이션 드로어 부분-->
+    <string name="drawer_item_home">HOME</string>
+    <string name="drawer_item_guide">가이드 추적</string>
+    <string name="drawer_item_destination">목적지 추적</string>
+    <string name="drawer_item_all">모두 추적</string>
+    <string name="drawer_item_party">일행 추적</string>
+    <string name="drawer_item_exit">그룹 나가기</string>
+
+
     <!-- UI TEXT -->
     <string name="alert_password">*비밀번호를 입력해주세요</string>
 

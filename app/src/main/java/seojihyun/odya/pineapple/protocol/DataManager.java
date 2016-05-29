@@ -843,4 +843,14 @@ public class DataManager extends Application {
         }
     }
 
+    // find user
+    public UserData findUser (String user_name) {
+        for(int i=0; i<users.size(); i++) {
+            if(users.get(i).getUser_name()== user_name) {
+                return users.get(i);
+            }
+        }
+        return null;
+    }
+
 }

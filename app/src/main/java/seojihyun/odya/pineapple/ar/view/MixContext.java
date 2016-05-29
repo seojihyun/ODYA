@@ -173,16 +173,19 @@ public class MixContext extends ContextWrapper {
         return locationMgr;
     }
 
-    // 시작 Url 경로를 리턴한다
+    // 시작 Url 경로를 리턴한다 2016-05-29 서지현 수정
     public String getStartUrl() {
         Intent intent = ((Activity) mixView).getIntent();
         // 웹 브라우져가 켜질 경우
+        /*
         if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_VIEW)) {
             return intent.getData().toString();
         }
         else {
             return "";
         }
+        */
+        return "";
     }
 
     // 인자로 받는 dest 에 회전 행렬을 세팅

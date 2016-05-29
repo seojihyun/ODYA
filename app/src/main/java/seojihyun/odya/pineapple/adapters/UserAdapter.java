@@ -119,6 +119,8 @@ public class UserAdapter extends BaseSwipeAdapter {
                 // 1. UserData 의 partyType 설정 = true
                 item.setParty();
 
+                // 2. 네비게이션 드로어 헤더안에 리스트 추가
+                ((MainActivity) context).insertPartyMember(item);
 
                 // swipelayout 닫기
                 swipeLayout.close();
@@ -134,6 +136,9 @@ public class UserAdapter extends BaseSwipeAdapter {
                 //  액션 추가 필요
                 // 1. UserData 의 partyType 설정 = false
                 item.removeParty();
+
+                // 2. 네비게이션 드로어 헤더안에 리스트 삭제
+                ((MainActivity) context).removePartyMember(item);
 
                 //swipelayout 닫기
                 swipeLayout.close();

@@ -24,7 +24,7 @@ public class EnterGroupDialog extends Dialog {
 
     private TextView mTitleView;
     private TextView mContentView;
-    private CodeInput password;
+    private EditText password;
     private Button mLeftButton;
     private Button mRightButton;
     private String mTitle;
@@ -46,7 +46,7 @@ public class EnterGroupDialog extends Dialog {
 
         setContentView(R.layout.dialog_enter_group);
 
-        password = (CodeInput) findViewById(R.id.edit_password);
+        password = (EditText) findViewById(R.id.edit_password);
         mLeftButton = (Button) findViewById(R.id.btn_left);
         mRightButton = (Button) findViewById(R.id.btn_right);
 
@@ -86,7 +86,7 @@ Context context;
 
     //입력한 비밀번호값 activity로 가져가기
     public String getPwd() {
-        String pwd = Arrays.toString(password.getCode());
+        String pwd = password.getText().toString();
         Toast.makeText(context, "PWD : "+ pwd, Toast.LENGTH_SHORT).show();
         return pwd;
     }

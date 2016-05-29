@@ -90,7 +90,7 @@ public class DataSource {
     }
 
     // 각 정보들로 완성된 URL 리퀘스트를 생성 2016-05-15  파라미터 추가 : group_name, user_phone_to_track
-    public static String createRequestURL(DATASOURCE source, double lat, double lon, double alt, float radius, String locale,String group_name, String user_phone_to_track) {
+    public static String createRequestURL(DATASOURCE source, double lat, double lon, double alt, float radius, String locale, String group_name, String user_phone_to_track, String track_type) {
         String ret="";	// 결과 스트링
 
         // 소스에 따라 주소 할당. 우선 상수로 설정된 값들을 할당한다
@@ -133,6 +133,7 @@ public class DataSource {
                                     "&maxRows=50" +
                                     "&lang=" + locale +
                                     "&username=seojihyunn"+
+                                    "&track_type" + track_type + //2016-05-29 서지현 추가
                                     "&user_phone_to_track=" + user_phone_to_track +
                                     "&group_name" + group_name ;
                     break;

@@ -25,19 +25,14 @@
             android:background="@drawable/border_shadow_primary"
             android:text="그룹 입장" />
 
-        <com.github.glomadrian.codeinputlib.CodeInput
+        <EditText
             android:layout_marginTop="20dp"
             android:layout_width="291dp"
             android:layout_height="50dp"
             android:id="@+id/edit_password"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            app:underline_color="#03A9F4"
-            app:underline_selected_color="#3F51B5"
-            app:text_color="#212121"
-            app:hint_color="#03A9F4"
-            app:hint_text="Password"
-            app:codes="8"
+            android:inputType="textPassword"
             />
         <TextView
             android:layout_width="match_parent"
