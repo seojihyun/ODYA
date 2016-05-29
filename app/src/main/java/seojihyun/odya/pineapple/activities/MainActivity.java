@@ -36,6 +36,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.util.Attributes;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -84,8 +86,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 import com.mikepenz.materialize.util.UIUtils;
-
-
 
 import static seojihyun.odya.pineapple.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 
@@ -514,6 +514,15 @@ public class MainActivity extends AppCompatActivity {
         userList.setAdapter(userAdapter);
         //데이터가 변했을때 호출
         userAdapter.notifyDataSetChanged();
+
+        userAdapter.setMode(Attributes.Mode.Single);
+        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((SwipeLayout)(userList.getChildAt(position - userList.getFirstVisiblePosition()))).open(true);
+            }
+        });
+
     }
 
     /**공지추가 **//////////////////////////
@@ -935,8 +944,8 @@ public class MainActivity extends AppCompatActivity {
 
         mMapInfoWindowAdapter.getInfoContents(focusedUserMarker);
 
-        //네비게이션 드로어 닫기
-        drawerLayout.closeDrawers();
+        //네비게이션 드로어 닫기 2016-05-29 삭제
+        //drawerLayout.closeDrawers();
 
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         // Map Tab으로 이동
@@ -1092,13 +1101,7 @@ public class MainActivity extends AppCompatActivity {
         //super.onBackPressed();
 
 
-        // new - 네비게이션 드로어
-        //handle the back press :D close the drawer first and if the drawer is closed close the activity
-        if (result != null && result.isDrawerOpen()) {
-            result.closeDrawer();
-        } else {
-            super.onBackPressed();
-        }
+
     }
 
     // 2016-05-09 서지현

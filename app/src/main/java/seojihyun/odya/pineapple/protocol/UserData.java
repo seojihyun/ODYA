@@ -12,6 +12,8 @@ public class UserData implements Serializable {
     private String longitude="";
     private String group_name="";
 
+    private boolean partyType=false;
+
     UserData() {
 
     }
@@ -43,6 +45,10 @@ public class UserData implements Serializable {
         latitude = params[2];
         longitude = params[3];
         group_name = params[4];
-
     }
+
+    // 일행 설정
+    public void setParty() { partyType = true; }
+    public void removeParty() { partyType = false; }
+    public boolean isParty() { return partyType; }
 }

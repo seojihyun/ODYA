@@ -10,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.swipe.SimpleSwipeListener;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+
 import java.util.Vector;
 
 import seojihyun.odya.pineapple.R;
@@ -20,7 +24,7 @@ import seojihyun.odya.pineapple.protocol.UserData;
 /**
  * Created by SEOJIHYUN on 2016-02-20.
  */
-public class UserAdapter extends BaseAdapter {
+public class UserAdapter extends BaseSwipeAdapter {
     /*
     @param context : 컨텍스트
     @param layoutId : 보여줄 레이아웃
@@ -68,15 +72,19 @@ public class UserAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null) { //항목 뷰가 한번도 보여진적이 없는 경우
-            //레이아웃(list_group_item.xml)을 자바 객체로 변환하기
-            convertView=inflater.inflate(layoutId, parent, false);
-        }
-        ///// convertView에 어떻게 보여질지 설정 /////
+    public int getSwipeLayoutResourceId(int i) {
+        return R.id.swipe;
+    }
+
+    @Override
+    public View generateView(int position, ViewGroup viewGroup) {
+        final View convertView = LayoutInflater.from(context).inflate(R.layout.item_user, null);
+        final SwipeLayout swipeLayout = (SwipeLayout)convertView.findViewById(getSwipeLayoutResourceId(position));
+
+        TextView text_user_phone = (TextView)swipeLayout.findViewById(R.id.text_user_phone);
+        TextView text_user_name = (TextView)swipeLayout.findViewById(R.id.text_user_name);
+        final ImageView button = (ImageView) swipeLayout.findViewById(R.id.button_user_profile);
         //텍스트뷰에 group_name 넣기
-        TextView text_user_phone = (TextView)convertView.findViewById(R.id.text_user_phone);
-        TextView text_user_name = (TextView)convertView.findViewById(R.id.text_user_name);
         final UserData item = list.get(position);
         text_user_phone.setText(item.getUser_phone());
         text_user_name.setText(item.getUser_name());
@@ -95,16 +103,66 @@ public class UserAdapter extends BaseAdapter {
                 img.setImageResource(R.drawable.pin2);
             }
         }
-        // 서지현 추가 끝
 
 
-        /*이미지뷰에 그룹 이미지 넣기
-        * ImageView img=(ImageView) convertView.findViewById(...)
-        * img.setImageResource(item.getIcon());
-        * */
+        // 클릭 리스너 부착
+        // 1. 일행 추가
+        // 2. 일행 삭제
+        // 3. 위치 추적
+        convertView.findViewById(R.id.addParty).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "click addParty", Toast.LENGTH_SHORT).show();
+                // 프로필에 별 추가
+                button.setVisibility(View.VISIBLE);
+                //  액션 추가 필요
+                // 1. UserData 의 partyType 설정 = true
+                item.setParty();
+
+
+                // swipelayout 닫기
+                swipeLayout.close();
+            }
+        });
+
+        convertView.findViewById(R.id.removeParty).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "click removeParty", Toast.LENGTH_SHORT).show();
+                // 프로필에 별 삭제
+                button.setVisibility(View.INVISIBLE);
+                //  액션 추가 필요
+                // 1. UserData 의 partyType 설정 = false
+                item.removeParty();
+
+                //swipelayout 닫기
+                swipeLayout.close();
+            }
+        });
+
+        convertView.findViewById(R.id.focusMarker).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "click focusMarker", Toast.LENGTH_SHORT).show();
+                String txt = "이름 : " + item.getUser_name() + "\n전화번호 : " + item.getUser_phone();
+                //토스트로 출력하기
+                Toast.makeText(context, txt, Toast.LENGTH_LONG).show();
+                // 방 입장 메소드 호출 ******테스트중
+                //((MainActivity)context).makeEnterGroupDialog(item);
+
+                //2016-03-31 테스트중 서지현
+                ((MainActivity)context).focusMarker(item);
+            }
+        });
+
+
+
+     ///이미지뷰에 그룹 이미지 넣기
+        //* ImageView img=(ImageView) convertView.findViewById(...)
+       // * img.setImageResource(item.getIcon());
+
 
         // 버튼 눌렀을때 선택된 제품명 출력하기
-        ImageView button = (ImageView) convertView.findViewById(R.id.button_user_profile);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +176,13 @@ public class UserAdapter extends BaseAdapter {
                 ((MainActivity)context).focusMarker(item);
             }
         });
+
         return convertView;
     }
+
+    @Override
+    public void fillValues(int i, View view) {
+
+    }
+
 }
