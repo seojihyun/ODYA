@@ -18,16 +18,10 @@
             layout="@layout/toolbar"
             />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/shadow" />
-
         <FrameLayout
-            android:id="@+id/frame"
+            android:id="@+id/main_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <TabHost
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -44,11 +38,10 @@
                         android:layout_height="wrap_content"
                         android:tabStripEnabled="false"
                         android:touchscreenBlocksFocus="false"
+                        android:elevation="3dp"
                         android:focusable="false"
                         android:showDividers="end"
-                        android:background="#ffffff"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="2dp">
+                        android:background="#ffffff">
                     </TabWidget>
 
                     <FrameLayout

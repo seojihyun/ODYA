@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         //set the back arrow in the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("파인애플");
+        getSupportActionBar().setTitle(dataManager.userData.getGroup_name()); // 타이틀 그룹명으로 지정
 
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
@@ -370,17 +370,21 @@ public class MainActivity extends AppCompatActivity {
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
+                .withTranslucentStatusBar(true)
                 .addProfiles(
                         profile, profile2
                 )
                 .withSavedInstance(savedInstanceState)
                 .build();
-
+        
         //Create the drawer
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
+                .withRootView(R.id.main_frame)
+                .withActionBarDrawerToggleAnimated(true)
                 .withHasStableIds(true)
+                .withTranslucentStatusBar(true)
                 .withDrawerLayout(R.layout.crossfade_drawer)
                 .withDrawerWidthDp(72)
                 .withGenerateMiniDrawer(true)
@@ -422,6 +426,8 @@ public class MainActivity extends AppCompatActivity {
         final MiniDrawer miniResult = result.getMiniDrawer();
         //build the view for the MiniDrawer
         View view = miniResult.build(this);
+
+
         //set the background of the MiniDrawer as this would be transparent
         view.setBackgroundColor(getResources().getColor(R.color.findappleBackground)); // 네비게이션드로어 배경 색깔
         //we do not have the MiniDrawer view during CrossfadeDrawerLayout creation so we will add it here
