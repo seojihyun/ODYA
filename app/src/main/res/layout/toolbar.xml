@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="53dp"
     android:elevation="3dp"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:theme="@style/Theme.AppCompat.Light.NoActionBar"
     android:background="@color/colorPrimary">
 </android.support.v7.widget.Toolbar>

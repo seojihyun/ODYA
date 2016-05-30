@@ -81,11 +81,11 @@
                                     android:id="@+id/layout_map_profile"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@color/colorPrimary"
                                     android:orientation="vertical"
                                     app:behavior_peekHeight="40dp"
                                     app:behavior_hideable="false"
-                                    app:layout_behavior="@string/bottom_sheet_behavior">
+                                    app:layout_behavior="@string/bottom_sheet_behavior"
+                                    android:background="@color/colorPrimary">
 
                                     <TextView
                                         android:layout_width="386dp"

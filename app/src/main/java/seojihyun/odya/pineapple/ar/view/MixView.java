@@ -6,6 +6,7 @@ import seojihyun.odya.pineapple.ar.data.DataSource;
 import seojihyun.odya.pineapple.ar.etc.Compatibility;
 import seojihyun.odya.pineapple.ar.gui.PaintScreen;
 import seojihyun.odya.pineapple.ar.render.Matrix;
+import seojihyun.odya.pineapple.data.LoginSharedPreferences;
 import seojihyun.odya.pineapple.protocol.DataManager;
 
 import android.app.AlertDialog;
@@ -47,6 +48,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -62,7 +64,7 @@ import java.util.Vector;
 import static android.hardware.SensorManager.SENSOR_DELAY_GAME;
 
 // 메인에 보여지게 될 믹스뷰(액티비티) 클래스
-public class MixView extends FragmentActivity implements SensorEventListener, LocationListener, View.OnTouchListener {
+public class MixView extends FragmentActivity implements OnMapReadyCallback, SensorEventListener, LocationListener, View.OnTouchListener {
 
     DataManager dataManager;
 
@@ -320,6 +322,10 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
 
             //maintainMap(); //2016-05-06*********************** 서지현
 
+            //2016-05-30  지도관련 추가
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.ar_map);
+            mapFragment.getMapAsync(this);
 
             //setupMap();
             //maintainActionButton();
@@ -425,8 +431,6 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
     public void setupMap() {
         View ar_ui = getLayoutInflater().inflate(R.layout.ar_ui, null);
 
-        map = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map))
-                .getMap();
         LatLng latLng = new LatLng(37.5122603, 126.75901939999994);
         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         // Map을 zoom 합니다
@@ -577,6 +581,78 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
 
        sound_flash.start();
    }
+
+    // 2016-05-30 지도에 마킹
+    public void marking() {
+        Toast.makeText(mixContext, "*********마킹********", Toast.LENGTH_LONG).show();
+        if (dataView.getDataHandler().getMarkerCount() > 0) {
+            for (int i = 0; i < dataView.getDataHandler().getMarkerCount(); i++) {
+                Marker marker = dataView.getDataHandler().getMarker(i);
+                LatLng latLng = new LatLng(marker.getLatitude(), marker.getLongitude());
+                MarkerOptions mapMarker = new MarkerOptions();
+                mapMarker.position(latLng);
+                mapMarker.title(marker.getTitle());
+                // 마커 아이콘 구분
+                /* 1. 목적지인 경우
+                *  2. 나인 경우
+                *  3. 가이드인 경우
+                *  4. 나머지 인 경우
+                   mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin2));
+                    *  */
+                    if(marker.getTitle().equals("목적지")) { // 목적지인 경우
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_d));
+                    } else if(marker.getTitle().equals(LoginSharedPreferences.getPreferences(mixContext, "user_name"))) { // 나인 경우
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3));
+                        // map 카메라 이동
+                        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                        // Map을 zoom
+                        map.animateCamera(CameraUpdateFactory.zoomTo(15));
+                    } else if(marker.getTitle().equals(dataManager.groupData.getUser_name())) { // 가이드인 경우
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin1));
+                    } else { // 나머지
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin2));
+                    }
+
+                map.addMarker(mapMarker);
+            } // end for
+        }// end if
+
+        //마커 설정
+        //MarkerOptions optFirst = new MarkerOptions();
+        // 마커 위치 지정
+        //optFirst.position(latLng); //위도*경도
+        //optFirst.title(dataManager.userData.getUser_name()); //제목 미리보기
+        //optFirst.snippet(dataManager.userData.getUser_phone());
+        //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3));
+
+
+        //optFirst.icon(BitmapDescriptorFactory.fromResource(R.dra));
+
+        //마커를 추가하고 말풍선 표시한것을 보여주도록 호출
+        //mMap.addMarker(optFirst).showInfoWindow();
+    }
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng myLocation = new LatLng(Double.parseDouble(dataManager.userData.getLatitude()), Double.parseDouble(dataManager.userData.getLongitude()));
+        map.addMarker(new MarkerOptions().position(myLocation).title("Me").icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3)));
+        map.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        // Map을 zoom 합니다
+        map.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+    }
+
     //*********************************************************
     // 인텐트 제어
     private void handleIntent(Intent intent) {
@@ -803,6 +879,8 @@ public class MixView extends FragmentActivity implements SensorEventListener, Lo
             // 다운로드 스레드의 활성화
             downloadThread = new Thread(mixContext.downloadManager);
             downloadThread.start();
+
+
         } catch (Exception ex) {
             doError(ex);    // 에러 처리
 

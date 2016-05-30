@@ -298,6 +298,8 @@ public class DataView {
                     // 특정 데이터 소스로부터 다운로드 받았음을 알림
                     Toast.makeText(mixContext, mixContext.getResources().getString(R.string.download_received) +" "+ dRes.source, Toast.LENGTH_SHORT).show();
 
+
+                    mixContext.marking(); // 2016-05-30 지도 마킹
                 }
             }
             if(dm.isDone()) {	// 다운로드 관리자의 작업이 끝난 경우

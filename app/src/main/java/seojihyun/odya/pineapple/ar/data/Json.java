@@ -90,7 +90,7 @@ public class Json extends DataHandler {
                     jo.getDouble("lat"),
                     jo.getDouble("lng"),
                     jo.getDouble("elevation"),
-                    "http://",		// 위키의 url 을 입력
+                    "http://google.co.kr/",		// 위키의 url 을 입력
                     DataSource.DATASOURCE.PINEAPPLE);
         }
         return ma;	// 마커 리턴

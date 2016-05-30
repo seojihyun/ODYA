@@ -399,9 +399,9 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(getString(R.string.drawer_item_all)).withIcon(R.drawable.drawer_guide).withBadge("all").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(4),
                         //new PrimaryDrawerItem().withDescription("A more complex sample").withName("두번째줄").withIcon(R.drawable.drawer_mygroup).withIdentifier(5),
                         new PrimaryDrawerItem().withName(getString(R.string.drawer_item_party)).withIcon(R.drawable.drawer_guide).withBadge("22").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(3).withIdentifier(6),
-                        new SectionDrawerItem().withName("나의 일행 리스트"),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_exit)).withIcon(R.drawable.drawer_exit),
+                        new SectionDrawerItem().withName("나의 일행 리스트")
                         //new SecondaryDrawerItem().withName("open Source").withIcon(R.drawable.drawer_mygroup),
-                        new SecondaryDrawerItem().withName(getString(R.string.drawer_item_exit)).withIcon(R.drawable.drawer_exit).withTag("Bullhorn")
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //set the background of the MiniDrawer as this would be transparent
-        view.setBackgroundColor(getResources().getColor(R.color.findappleBackground)); // 네비게이션드로어 배경 색깔
+        view.setBackgroundColor(getResources().getColor(R.color.findappleBase)); // 네비게이션드로어 배경 색깔
         //we do not have the MiniDrawer view during CrossfadeDrawerLayout creation so we will add it here
         crossfadeDrawerLayout.getSmallView().addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
              setARConnection(getString(R.string.track_type_destination), "", "");
 
          }  else if(itemName ==  getString(R.string.drawer_item_all)) {
-
+             setARConnection(getString(R.string.track_type_all), "", "");
          }  else if(itemName ==  getString(R.string.drawer_item_party)) {
 
          }  else if(itemName ==  getString(R.string.drawer_item_exit)) {

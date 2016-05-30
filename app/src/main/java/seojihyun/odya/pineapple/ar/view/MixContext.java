@@ -374,7 +374,7 @@ public class MixContext extends ContextWrapper {
         }
     }
 
-    // 네트워크 인풋 스트림을 닫는다
+    // 네트워크 인풋 스트림을 닫는다 - 2016-05-30 다운로드 완료
     public void returnHttpInputStream(InputStream is) throws Exception {
         if (is != null) {
             is.close();
@@ -545,6 +545,10 @@ public class MixContext extends ContextWrapper {
     // 마지막으로 다운로드된 위치를 세팅
     public void setLocationAtLastDownload(Location locationAtLastDownload) {
         this.locationAtLastDownload = locationAtLastDownload;
+    }
+
+    public void marking() { // 2016-05-30 마킹
+        mixView.marking();
     }
 
 }
