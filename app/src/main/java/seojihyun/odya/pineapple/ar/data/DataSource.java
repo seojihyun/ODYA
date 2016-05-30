@@ -22,11 +22,11 @@ public class DataSource {
 
     /** 기본 URL */
     // 파인애플
-    private static final String PINEAPPLE_BASE_URL ="http://211.58.69.16:8080/pineapple/artest.php"; //2016-05-30
+    private static final String PINEAPPLE_BASE_URL ="http://211.58.69.16:8080/pineapple/ar_track_test.php"; //2016-05-30
     // private static final String PINEAPPLE_BASE_URL ="http://211.58.69.16:8080/pineapple/artest.php";
     // 위키피디아
     //private static final String WIKI_BASE_URL = "http://ws.geonames.org/findNearbyWikipediaJSON";
-    private static final String WIKI_BASE_URL = "http://211.58.69.16:8080/pineapple/artest.php";
+    private static final String WIKI_BASE_URL = "http://211.58.69.16:8080/pineapple/ar_track_test.php";
     //private static final String WIKI_BASE_URL =	"file:///sdcard/wiki.json";
 
     // 트위터
@@ -133,9 +133,9 @@ public class DataSource {
                                     "&maxRows=50" +
                                     "&lang=" + locale +
                                     "&username=seojihyunn"+
-                                    "&track_type" + track_type + //2016-05-29 서지현 추가
+                                    "&track_type=" + track_type + //2016-05-29 서지현 추가
                                     "&user_phone_to_track=" + user_phone_to_track +
-                                    "&group_name" + group_name ;
+                                    "&group_name=" + group_name ;
                     break;
                 // 위키피디아
                 case WIKIPEDIA:
