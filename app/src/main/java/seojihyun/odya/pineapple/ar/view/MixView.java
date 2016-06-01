@@ -8,6 +8,7 @@ import seojihyun.odya.pineapple.ar.gui.PaintScreen;
 import seojihyun.odya.pineapple.ar.render.Matrix;
 import seojihyun.odya.pineapple.data.LoginSharedPreferences;
 import seojihyun.odya.pineapple.protocol.DataManager;
+import seojihyun.odya.pineapple.protocol.GpsInfo;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -67,7 +68,7 @@ import static android.hardware.SensorManager.SENSOR_DELAY_GAME;
 public class MixView extends FragmentActivity implements OnMapReadyCallback, SensorEventListener, LocationListener, View.OnTouchListener {
 
     DataManager dataManager;
-
+    GpsInfo gpsInfo;
     //플래시
     Camera camera;
     private boolean isFlashOn;
@@ -263,6 +264,9 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
         dataManager = (DataManager) this.getApplicationContext();
         dataManager.setActivity(this);
 
+        gpsInfo = dataManager.getGpsInfo(); // 2016-05-31 ar-gps
+
+
         // 데이터 소스로부터 아이콘 생성
         DataSource.createIcons(getResources());
 
@@ -278,7 +282,7 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
             // 위치관리자의 설정
             locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             // 위치정보 업데이트 설정. 2번째 인자 시간(1/1000s), 3번째 인자 거리(m)에 따라 갱신한다
-            locationMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, this);
+            locationMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
 
             killOnError();    // 에러 여부를 체크한다
             requestWindowFeature(Window.FEATURE_NO_TITLE);    // 타이틀 바가 없는 윈도우 형태로
@@ -582,9 +586,13 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
        sound_flash.start();
    }
 
-    // 2016-05-30 지도에 마킹
+    // 2016-05-30 지도에 마킹 - 1.추적하려는 사용자의 위치
     public void marking() {
         Toast.makeText(mixContext, "*********마킹********", Toast.LENGTH_LONG).show();
+        map.clear();
+
+        myLocationMarking(); //  내위치 마킹
+
         if (dataView.getDataHandler().getMarkerCount() > 0) {
             for (int i = 0; i < dataView.getDataHandler().getMarkerCount(); i++) {
                 Marker marker = dataView.getDataHandler().getMarker(i);
@@ -602,15 +610,15 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
                     if(marker.getTitle().equals("목적지")) { // 목적지인 경우
                         mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_d));
                     } else if(marker.getTitle().equals(LoginSharedPreferences.getPreferences(mixContext, "user_name"))) { // 나인 경우
-                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3));
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin3));
                         // map 카메라 이동
                         map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                         // Map을 zoom
                         map.animateCamera(CameraUpdateFactory.zoomTo(15));
                     } else if(marker.getTitle().equals(dataManager.groupData.getUser_name())) { // 가이드인 경우
-                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin1));
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin1));
                     } else { // 나머지
-                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin2));
+                        mapMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin2));
                     }
 
                 map.addMarker(mapMarker);
@@ -630,6 +638,19 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
 
         //마커를 추가하고 말풍선 표시한것을 보여주도록 호출
         //mMap.addMarker(optFirst).showInfoWindow();
+    }
+
+    // 2. 내위치 마킹 - marking() 안에
+    public void myLocationMarking() {
+        LatLng myLocation = new LatLng(Double.parseDouble(dataManager.userData.getLatitude()), Double.parseDouble(dataManager.userData.getLongitude()));
+
+        com.google.android.gms.maps.model.Marker myMarker = map.addMarker(new MarkerOptions().position(myLocation).title("Me").icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin3)));
+        map.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        // Map을 zoom 합니다
+        map.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+        myMarker.showInfoWindow();
+
     }
     /**
      * Manipulates the map once available.
@@ -814,22 +835,22 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
                 // 위치관리자를 할당 후
                 locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 // 인자 값에 따라 위치 갱신을 요청한다. 2번째가 시간, 3번째가 거리
-                locationMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, this);
+                locationMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
 
                 // 최적의 위치제공자를 찾고, 할당 가능한지 파악한다
                 String bestP = locationMgr.getBestProvider(c, true);
                 isGpsEnabled = locationMgr.isProviderEnabled(bestP);
 
                 // gps, 네트워크가 먹통일 때의 기본 위치 설정
-                Location hardFix = new Location("reverseGeocoded");
+                Location hardFix = gpsInfo.getLocation(); // gps
 
                 //				hardFix.setLatitude(0);
                 //				hardFix.setLongitude(0);
 
                 // 기본 위치의 값을 수정
-                hardFix.setLatitude(46.480302);
-                hardFix.setLongitude(11.296005);
-                hardFix.setAltitude(300);
+               // hardFix.setLatitude(46.480302);
+                //hardFix.setLongitude(11.296005);
+               // hardFix.setAltitude(300);
 
 				/*New York*/
                 //				hardFix.setLatitude(40.731510);
@@ -842,8 +863,10 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
 
                 try {
                     // 위치 관리자로부터 gps, 네트워크의 마지막으로 알려진 장소를 얻어 옮
-                    Location gps = locationMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    //Location gps = locationMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER); 2016-05-31 삭제
                     Location network = locationMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                    Location gps = gpsInfo.getLocation(); // ar-gps 서지현
 
                     // 위치 값을 얻어오게 되면 현재 위치를 지정
                     // 우선순위는 gps > 네트워크 > 기본값
@@ -1291,7 +1314,11 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
             // 변경된 위치의 로그를 생성한다. 위도와 경도를 기록
             Log.v(TAG, "Location Changed: " + location.getProvider() + " lat: " + location.getLatitude() + " lon: " + location.getLongitude() + " alt: " + location.getAltitude() + " acc: " + location.getAccuracy());
 
-            //2014-04-21 ****서지현 테스트중
+
+            marking();
+
+
+            /* //2014-04-21 ****서지현 테스트중
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             LatLng latLng = new LatLng(latitude, longitude);
@@ -1308,6 +1335,7 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
             map.addMarker(optFirst);
             //2014-04-21 ****끝
 
+*/
             // 위치 제공자가 동일할 경우
             if (LocationManager.GPS_PROVIDER.equals(location.getProvider())) {
                 // 현재의 위치를 변경된 위치로 지정
