@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import seojihyun.odya.pineapple.R;
+import seojihyun.odya.pineapple.SharedPreferencesManager;
 import seojihyun.odya.pineapple.protocol.DataManager;
 import seojihyun.odya.pineapple.protocol.Protocol;
 
@@ -37,6 +39,7 @@ public class DestinationActivity extends AppCompatActivity {
     double latitude, longitude;
     String content;
     EditText editText;
+    Button locationSettingButton;
 
     int pageNum=0; //현재 페이지 넘버
     FloatingActionButton fab1, fab2, fab3;
@@ -72,17 +75,17 @@ public class DestinationActivity extends AppCompatActivity {
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag1");
         spec.setContent(R.id.d_tab1);
-        spec.setIndicator("1.Destination"); //탭버튼에 들어갈 이름
+        spec.setIndicator("1.목적지설정"); //탭버튼에 들어갈 이름
         tabHost.addTab(spec); //탭호스트에 탭 추가
 
         spec = tabHost.newTabSpec("tag2");
         spec.setContent(R.id.d_tab2);
-        spec.setIndicator("2.Time");
+        spec.setIndicator("2.시간설정");
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("tag3");
         spec.setContent(R.id.d_tab3);
-        spec.setIndicator("3.Content");
+        spec.setIndicator("3.기타내용");
         tabHost.addTab(spec);
 
         // tab1부분이 초기화면으로 설정
@@ -207,6 +210,20 @@ public class DestinationActivity extends AppCompatActivity {
                 }
             });
         }
+        locationSettingButton = (Button) findViewById(R.id.button_destination_location_setting);
+        locationSettingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(map != null) {
+                    Double latitude = Double.parseDouble(dataManager.userData.getLatitude());
+                    Double longitude = Double.parseDouble(dataManager.userData.getLongitude());
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    // Map을 zoom 합니다
+                    map.animateCamera(CameraUpdateFactory.zoomTo(15));
+                }
+            }
+        });
     }
 
     public void submitDestination() {

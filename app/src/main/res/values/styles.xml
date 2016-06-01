@@ -5,12 +5,13 @@
     <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:windowTranslucentStatus">true</item>
+
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
-
+        <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
+
 
     <style name="ActionBarStyle" parent="Widget.AppCompat.ActionBar.TabView">
         <item name="elevation">0dp</item>
@@ -19,7 +20,7 @@
     </style>
 
     <style name="MenuLabelsStyle">
-        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:background">@color/findappleAccent</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">2</item>

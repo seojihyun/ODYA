@@ -24,7 +24,7 @@
             android:id="@+id/removeParty"
             android:src="@drawable/useritem_removeparty"
             android:layout_width="70dp"
-            android:background="@color/findappleAccent"
+            android:background="#FFF67947"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:layout_height="match_parent" />

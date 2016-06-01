@@ -7,8 +7,10 @@
     <color name="colorBottomSheetBackground">#e4e4e4</color>
 
     <color name="findappleBase">#d4d4d4</color>
-    <color name="findappleAccent">#f67947</color>
-    <color name="findappleBackground">#818182</color>
+    <color name="findappleAccent">#009688</color>
+    <color name="findappleBackground">#b6b6b6</color>
+    <color name="findappleWhite">#f1f1f1</color>
+    <color name="findappleAccent2">#FFF67947</color>
 
     <color name="PrimaryColor">#b6b6b6</color>
     <color name="PrimaryDarkColor">#FFA5A5A5</color>

@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#ffffff">
+    android:background="@color/findappleWhite">
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
@@ -10,8 +10,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +35,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="10dp">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,34 +47,38 @@
                 android:id="@+id/text_infowindow_phone"
                 android:layout_gravity="center_vertical" />
         </LinearLayout>
-
-        <FrameLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp">
+            android:layout_below="@id/note_title"
+            android:id="@+id/shadow"
+            android:layout_height="2dp"
+            android:background="@drawable/shadow" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:background="#40000000"
+            android:layout_marginBottom="10dp">
 
             <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="left|center_vertical"
-                android:id="@+id/button_infowindow_ar"
-                android:background="@drawable/button_ar" />
-            <Button
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="트랙킹"
-                android:visibility="gone"/>
-            <Button
-                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="center_vertical|right"
-                android:background="@drawable/button_call"
+                android:id="@+id/button_infowindow_ar"
+                android:text="위치 안내"
+                android:layout_weight="0.5"
+                android:layout_marginRight="1dip"
+                android:background="@color/findappleWhite" />
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/button_infowindow_call"
-                 />
+                android:text="전화 걸기"
+                android:layout_weight="0.5"
+                android:background="@color/findappleWhite" />
 
-        </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

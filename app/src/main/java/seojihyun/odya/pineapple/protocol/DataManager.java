@@ -59,10 +59,10 @@ public class DataManager extends Application {
     /*Destination*/
     public DestinationData destinationData;
 
+    public GpsInfo gpsInfo; // 2016-05-31
 
-    public DataManager() {
-
-    }
+    public void setGpsInfo(GpsInfo gpsInfo) { this.gpsInfo = gpsInfo; }
+    public GpsInfo getGpsInfo() { return gpsInfo; }
 
     // 액티비티 등록
     public void setActivity(Activity activity) {

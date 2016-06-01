@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/border_shadow"
+        android:background="@color/findappleWhite"
         android:layout_gravity="center">
 
         <TextView
@@ -22,8 +22,9 @@
             android:gravity="center"
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:background="@drawable/border_shadow_primary"
-            android:text="그룹 입장" />
+            android:background="@color/colorPrimary"
+            android:text="그룹 입장"
+            android:elevation="4dp" />
 
         <EditText
             android:layout_marginTop="20dp"

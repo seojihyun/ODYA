@@ -97,6 +97,9 @@ public class UserAdapter extends BaseSwipeAdapter {
                 //가이드인 경우
                 ImageView img = (ImageView) convertView.findViewById(R.id.list_user_icon);
                 img.setImageResource(R.drawable.pin1);
+            } else if(item.getUser_phone().equals(dataManager.userData.getUser_phone())) { //일반 여행객중 자기자신인경우
+                ImageView img = (ImageView) convertView.findViewById(R.id.list_user_icon);
+                img.setImageResource(R.drawable.pin3);
             } else {
                 //일반 사용자인 경우
                 ImageView img = (ImageView) convertView.findViewById(R.id.list_user_icon);

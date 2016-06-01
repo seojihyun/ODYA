@@ -13,6 +13,8 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 import seojihyun.odya.pineapple.activities.MainActivity;
 
 /**
@@ -223,4 +225,5 @@ public class GpsInfo extends Service implements LocationListener {
         // TODO Auto-generated method stub
 
     }
+
 }

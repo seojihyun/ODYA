@@ -3,12 +3,25 @@
     android:orientation="horizontal" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:layout_width="50dp"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:id="@+id/img_infowindow_profile"
-        android:src="@drawable/abc_list_focused_holo"
-        android:layout_marginRight="15dp" />
+        android:weightSum="1">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@android:drawable/ic_menu_my_calendar"
+            android:layout_weight="0.5" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_infowindow_profile"
+            android:src="@android:drawable/ic_menu_call"
+            android:layout_weight="0.5" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,13 +31,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="전화번호"
-            android:id="@+id/text_infowindow_phone" />
+            android:text="이름"
+            android:id="@+id/text_infowindow_name" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이름"
-            android:id="@+id/text_infowindow_name" />
+            android:text="전화번호"
+            android:id="@+id/text_infowindow_phone" />
     </LinearLayout>
 </LinearLayout>

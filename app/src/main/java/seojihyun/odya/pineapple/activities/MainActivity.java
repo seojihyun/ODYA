@@ -295,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         mMap.clear();
         gps = new GpsInfo(MainActivity.this);
         getGps(); //********************테스트중
+        dataManager.setGpsInfo(gps); // 2016-05-31 gps
 
 
 
@@ -360,22 +361,23 @@ public class MainActivity extends AppCompatActivity {
         // Handle Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         //set the back arrow in the toolbar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // <- =
         getSupportActionBar().setTitle(dataManager.userData.getGroup_name()); // 타이틀 그룹명으로 지정
+
 
         // Create a few sample profile
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
         final IProfile profile = new ProfileDrawerItem()
                 .withName(dataManager.userData.getUser_name())
                 .withEmail(dataManager.userData.getUser_phone())
-                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460");
+                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460")
+                .withSelectedTextColor(getResources().getColor(R.color.colorPrimary));
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.color.findappleBase)
-                .withTranslucentStatusBar(true)
+                .withHeaderBackground(R.color.findappleBackground)
                 .addProfiles(
                         profile
                 )
@@ -384,21 +386,19 @@ public class MainActivity extends AppCompatActivity {
         //Create the drawer
         result = new DrawerBuilder()
                 .withActivity(this)
+                .withRootView(R.id.drawer_container)
                 .withToolbar(toolbar)
-                .withRootView(R.id.main_frame)
+                .withDisplayBelowStatusBar(false)
+                .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggleAnimated(true)
-                .withHasStableIds(true)
-                .withDrawerLayout(R.layout.crossfade_drawer)
-                .withDrawerWidthDp(72)
-                .withGenerateMiniDrawer(true)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(getString(R.string.drawer_item_home)).withIcon(R.drawable.drawer_home).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_guide)).withIcon(R.drawable.drawer_guide).withBadge("guide").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(2).withSelectable(false),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_guide)).withIcon(R.drawable.drawer_guide).withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(2).withSelectable(false),
                         new PrimaryDrawerItem().withName(getString(R.string.drawer_item_destination)).withIcon(R.drawable.drawer_destination).withIdentifier(3),
-                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_all)).withIcon(R.drawable.drawer_guide).withBadge("all").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_all)).withIcon(R.drawable.drawer_guide).withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(4),
                         //new PrimaryDrawerItem().withDescription("A more complex sample").withName("두번째줄").withIcon(R.drawable.drawer_mygroup).withIdentifier(5),
-                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_party)).withIcon(R.drawable.drawer_guide).withBadge("22").withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(3).withIdentifier(6),
+                        new PrimaryDrawerItem().withName(getString(R.string.drawer_item_party)).withIcon(R.drawable.drawer_guide).withBadgeStyle(new BadgeStyle(Color.RED, Color.RED)).withIdentifier(3).withIdentifier(6),
                         new PrimaryDrawerItem().withName(getString(R.string.drawer_item_exit)).withIcon(R.drawable.drawer_exit),
                         new SectionDrawerItem().withName("나의 일행 리스트")
                         //new SecondaryDrawerItem().withName("open Source").withIcon(R.drawable.drawer_mygroup),
@@ -418,46 +418,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .withSavedInstance(savedInstanceState)
-                .withShowDrawerOnFirstLaunch(true)
                 .withSliderBackgroundColor(getResources().getColor(R.color.findappleBase)) // 네비게이션 드로어 배경 색깔
                 .build();
 
 
         //get the CrossfadeDrawerLayout which will be used as alternative DrawerLayout for the Drawer
-        //the CrossfadeDrawerLayout library can be found here: https://github.com/mikepenz/CrossfadeDrawerLayout
-        crossfadeDrawerLayout = (CrossfadeDrawerLayout) result.getDrawerLayout();
-
-        //define maxDrawerWidth
-        crossfadeDrawerLayout.setMaxWidthPx(DrawerUIUtils.getOptimalDrawerWidth(this));
-        //add second view (which is the miniDrawer)
-        final MiniDrawer miniResult = result.getMiniDrawer();
-        //build the view for the MiniDrawer
-        View view = miniResult.build(this);
-
-
-        //set the background of the MiniDrawer as this would be transparent
-        view.setBackgroundColor(getResources().getColor(R.color.findappleBase)); // 네비게이션드로어 배경 색깔
-        //we do not have the MiniDrawer view during CrossfadeDrawerLayout creation so we will add it here
-        crossfadeDrawerLayout.getSmallView().addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        //define the crossfader to be used with the miniDrawer. This is required to be able to automatically toggle open / close
-        miniResult.withCrossFader(new ICrossfader() {
-            @Override
-            public void crossfade() {
-                boolean isFaded = isCrossfaded();
-                crossfadeDrawerLayout.crossfade(400);
-
-                //only close the drawer if we were already faded and want to close it now
-                if (isFaded) {
-                    result.getDrawerLayout().closeDrawer(GravityCompat.START);
-                }
-            }
-
-            @Override
-            public boolean isCrossfaded() {
-                return crossfadeDrawerLayout.isCrossfaded();
-            }
-        });
+        //the CrossfadeDrawerLayout library can be found here: https://github.com/mikepenz/CrossfadeDrawerLayou
 
     }
     // 네비게이션 드로어 - 버튼 액션 처리
@@ -465,6 +431,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
         String itemName =  ((Nameable) drawerItem).getName().getText(MainActivity.this);
          if(itemName == getString(R.string.drawer_item_home)) {
+             mtabHost.setCurrentTab(0);
+             result.closeDrawer();
 
          } else if(itemName ==  getString(R.string.drawer_item_guide)) {
              setARConnection(getString(R.string.track_type_guide), dataManager.groupData.getUser_phone(), dataManager.groupData.getUser_name());
@@ -545,6 +513,7 @@ public class MainActivity extends AppCompatActivity {
     public void initTabHost() {
 
         final TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
+        mtabHost = tabHost;
         tabHost.setup();
         ImageView tabMap = new ImageView(this); // 탭버튼 초기 이미지 부여
         tabMap.setImageResource(R.drawable.tab_map);
@@ -556,18 +525,18 @@ public class MainActivity extends AppCompatActivity {
         TabHost.TabSpec spec = tabHost.newTabSpec("tag1");
         spec.setContent(R.id.tab1);
         //spec.setIndicator("list");
-        spec.setIndicator("map", getResources().getDrawable(R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
+        spec.setIndicator("", getDrawable(R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
         tabHost.addTab(spec); //탭호스트에 탭 추가
 
         spec = tabHost.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
         //spec.setIndicator("list");
-        spec.setIndicator("list", getResources().getDrawable(R.drawable.tab_map));
+        spec.setIndicator("", getDrawable(R.drawable.tab_list));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("tag3");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("notice", getResources().getDrawable(R.drawable.tab_map));
+        spec.setIndicator("", getDrawable(R.drawable.tab_notice));
         //spec.setIndicator("notice");
         tabHost.addTab(spec);
 
@@ -846,8 +815,14 @@ public class MainActivity extends AppCompatActivity {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                marker.showInfoWindow(); /// 2016-05-27
-                mMapInfoWindowAdapter.getInfoContents(marker);
+                if(marker.getTitle().equals("목적지")) {
+                    Toast.makeText(getApplicationContext(), "모오오오옥저어어어억", Toast.LENGTH_LONG).show();
+                    mMapInfoWindowAdapter.getInfoContents(marker);
+                }
+                else {
+                    marker.showInfoWindow(); /// 2016-05-27
+                    mMapInfoWindowAdapter.getInfoContents(marker);
+                }
                 return true;
             }
         });
@@ -1097,9 +1072,15 @@ public class MainActivity extends AppCompatActivity {
             selectedMarker = marker;
             // 텍스트, 이미지등 설정
             try {
+                // custom infowindow 설정 - 2016- 05-30 서지현
+
+                TextView custom_name = (TextView)mapContentsView.findViewById(R.id.text_infowindow_name);
+                final TextView custom_phone = (TextView)mapContentsView.findViewById(R.id.text_infowindow_phone);
+
 
                 ///**********2016-2-29 테스트중 (프로필 fragment 관련)
                 LinearLayout layout_profile = (LinearLayout) findViewById(R.id.layout_map_profile);
+
                 LinearLayout map_layout_profile = (LinearLayout) findViewById(R.id.maptab_user_info);
                 TextView name = (TextView) map_layout_profile.findViewById(R.id.text_infowindow_name);
                 TextView phone = (TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone);
@@ -1107,33 +1088,65 @@ public class MainActivity extends AppCompatActivity {
                 Button button_call = (Button) map_layout_profile.findViewById(R.id.button_infowindow_call);
                 //*************
 
-                final UserData focusUserData = mMarkersHashMap.get(marker);
-                name.setText(focusUserData.getUser_name());
-                phone.setText(focusUserData.getUser_phone());
+                //1.목적지 마커인경우
+                if(selectedMarker.getTitle().equals("목적지")) {
+                    String d_groupName = dataManager.destinationData.getGroup_name();
+                    name.setText("목적지");
+                    phone.setText(dataManager.groupData.getUser_phone()); /// 목적지 전화번호 - 가이드 전화번호로 설정
+                    button_ar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            LinearLayout map_layout_profile = (LinearLayout) findViewById(R.id.maptab_user_info);
 
-                button_ar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //AR로 연결 - activity
-                        //2016-05-09
-                        LinearLayout map_layout_profile = (LinearLayout) findViewById(R.id.maptab_user_info);
-                        String user_phone_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone)).getText().toString();
-                        String user_name_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_name)).getText().toString();
+                            //2016-05-29 서지현 - AR연결 셋팅 (destination 타입)
+                            setARConnection(getString(R.string.track_type_destination), "", "");
+                        }
+                    });
+                    button_call.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse("tel:" + dataManager.groupData.getUser_phone()));
+                            startActivity(intent);
+                        }
+                    });
+
+                }
+
+                // 2.사용자 마커인경우
+                else {
+                    final UserData focusUserData = mMarkersHashMap.get(marker);
+                    name.setText(focusUserData.getUser_name());
+                    phone.setText(focusUserData.getUser_phone());
+
+                    // custom info window 설정 - 서지현
+                    custom_name.setText(focusUserData.getUser_name());
+                    custom_phone.setText(focusUserData.getUser_phone());
+
+                    button_ar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //AR로 연결 - activity
+                            //2016-05-09
+                            LinearLayout map_layout_profile = (LinearLayout) findViewById(R.id.maptab_user_info);
+                            String user_phone_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_phone)).getText().toString();
+                            String user_name_to_track = ((TextView) map_layout_profile.findViewById(R.id.text_infowindow_name)).getText().toString();
 
 
-                        //2016-05-29 서지현 - AR연결 셋팅 (user 타입)
-                        setARConnection(getString(R.string.track_type_user), user_phone_to_track, user_name_to_track);
+                            //2016-05-29 서지현 - AR연결 셋팅 (user 타입)
+                            setARConnection(getString(R.string.track_type_user), user_phone_to_track, user_name_to_track);
 
-                    }
-                });
-                button_call.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-                        intent.setData(Uri.parse("tel:" + focusUserData.getUser_phone()));
-                        startActivity(intent);
-                    }
-                });
+                        }
+                    });
+                    button_call.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse("tel:" + focusUserData.getUser_phone()));
+                            startActivity(intent);
+                        }
+                    });
+                }
                 //**********
             }catch(NullPointerException e) {
                 Toast.makeText(getApplicationContext(), "InfoWindow NullException Error", Toast.LENGTH_SHORT).show();
@@ -1184,6 +1197,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(getApplicationContext(), MixView.class);
+
+
+
         startActivity(intent);
         //finish(); 2016-05-24 서지현 삭제
     }

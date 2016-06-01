@@ -7,17 +7,19 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".activities.MainActivity">
-
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar"
             />
-
+        <FrameLayout
+            android:id="@+id/drawer_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
         <FrameLayout
             android:id="@+id/main_frame"
             android:layout_width="match_parent"
@@ -41,7 +43,7 @@
                         android:elevation="3dp"
                         android:focusable="false"
                         android:showDividers="end"
-                        android:background="#ffffff">
+                        android:background="@color/findappleWhite">
                     </TabWidget>
 
                     <FrameLayout
@@ -95,7 +97,8 @@
                                         android:lines="1"
                                         android:maxLines="1"
                                         android:text="    사용자 정보"
-                                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                                        android:textAppearance="?android:attr/textAppearanceMedium"
+                                        android:textColor="#ffffff" />
 
                                     <include
                                         layout="@layout/maptab_user_info"
@@ -111,7 +114,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginRight="16dp"
                                     android:layout_marginEnd="16dp"
-                                    android:src="@android:drawable/ic_menu_mylocation"
+                                    android:src="@drawable/ic_menu"
                                     app:layout_anchor="@+id/layout_map_profile"
                                     app:layout_anchorGravity="top|right" />
 
@@ -147,11 +150,12 @@
                                 style="@style/Widget.MaterialSheetFab.Note.List"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:paddingBottom="@dimen/note_spacing"
-                                android:background="@color/PrimaryColor" />
+                                android:background="@color/findappleBackground" />
 
                             <com.github.clans.fab.FloatingActionMenu
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                app:menu_colorNormal="@color/findappleAccent2"
                                 android:layout_gravity="bottom|right"
                                 app:fab_elevationCompat="4dp"
                                 android:id="@+id/menu_create_notice"
@@ -178,7 +182,7 @@
                 </LinearLayout>
             </TabHost>
         </FrameLayout>
-
+        </FrameLayout>
     </LinearLayout>
 
 
