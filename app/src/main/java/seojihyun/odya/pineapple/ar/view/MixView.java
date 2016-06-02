@@ -469,6 +469,7 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
         ImageView flashLightButton = (ImageView) ar_ui.findViewById(R.id.ar_button_flash);
         ImageView beepButton = (ImageView) ar_ui.findViewById(R.id.ar_button_beep);
         ImageView exitButton = (ImageView) ar_ui.findViewById(R.id.ar_button_exit);
+        ImageView zoomButton = (ImageView) ar_ui.findViewById(R.id.ar_button_zoom);
 
         /*
         *  초기 셋팅
@@ -511,6 +512,16 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
             }
         });
 
+        //4. zoom 버튼 - 클릭시 처리 (서지현)
+        zoomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 줌 레벨을 설정 가능한 줌 바를 보여준다
+                myZoomBar.setVisibility(View.VISIBLE);
+                zoomProgress = myZoomBar.getProgress();
+            }
+        });
+
 
 
         addContentView(ar_ui, new FrameLayout.LayoutParams(
@@ -540,6 +551,7 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
             alert.show();
             return false;
         }
+
         else return true;
     }
 
@@ -588,7 +600,7 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
 
     // 2016-05-30 지도에 마킹 - 1.추적하려는 사용자의 위치
     public void marking() {
-        Toast.makeText(mixContext, "*********마킹********", Toast.LENGTH_LONG).show();
+       // Toast.makeText(mixContext, "*********마킹********", Toast.LENGTH_LONG).show();
         map.clear();
 
         myLocationMarking(); //  내위치 마킹
@@ -643,8 +655,15 @@ public class MixView extends FragmentActivity implements OnMapReadyCallback, Sen
     // 2. 내위치 마킹 - marking() 안에
     public void myLocationMarking() {
         LatLng myLocation = new LatLng(Double.parseDouble(dataManager.userData.getLatitude()), Double.parseDouble(dataManager.userData.getLongitude()));
+        com.google.android.gms.maps.model.Marker myMarker;
+        if(dataManager.userType) { //내가 가이드인경우
+            myMarker = map.addMarker(new MarkerOptions().position(myLocation).title("Me").icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin1)));
 
-        com.google.android.gms.maps.model.Marker myMarker = map.addMarker(new MarkerOptions().position(myLocation).title("Me").icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin3)));
+        } else {
+            myMarker = map.addMarker(new MarkerOptions().position(myLocation).title("Me").icon(BitmapDescriptorFactory.fromResource(R.drawable.ar_pin3)));
+
+        }
+
         map.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         // Map을 zoom 합니다
         map.animateCamera(CameraUpdateFactory.zoomTo(15));

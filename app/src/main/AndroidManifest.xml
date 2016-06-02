@@ -86,26 +86,32 @@
 
         <activity
             android:name=".activities.LogoActivity"
-            android:label="@string/title_activity_logo">
+            android:label="Findapple"
+            android:theme="@style/FindappleTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.SignUpActivity" />
+        <activity android:name=".activities.LoginActivity"
+            android:theme="@style/FindappleTheme"/>
+        <activity android:name=".activities.SignUpActivity"
+            android:theme="@style/FindappleTheme"/>
         <activity android:name=".BackgroundActivity" />
 
         <service android:name=".GCMIntentService" />
         <service android:name=".protocol.GpsInfo" />
 
-        <activity android:name=".activities.GrouplistActivity" />
-        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.GrouplistActivity"
+            android:theme="@style/FindappleTheme"/>
+        <activity android:name=".activities.MainActivity"
+            android:theme="@style/MainActivityTheme"/>
         <activity
             android:name=".ar.view.MixView"
             android:launchMode="singleTop"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:theme="@style/ARActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

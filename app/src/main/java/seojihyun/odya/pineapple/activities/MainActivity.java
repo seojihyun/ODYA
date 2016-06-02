@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -525,18 +526,18 @@ public class MainActivity extends AppCompatActivity {
         TabHost.TabSpec spec = tabHost.newTabSpec("tag1");
         spec.setContent(R.id.tab1);
         //spec.setIndicator("list");
-        spec.setIndicator("", getDrawable(R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
+        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.tab_map)); //탭버튼 클릭 시 이미지 변환
         tabHost.addTab(spec); //탭호스트에 탭 추가
 
         spec = tabHost.newTabSpec("tag2");
         spec.setContent(R.id.tab2);
         //spec.setIndicator("list");
-        spec.setIndicator("", getDrawable(R.drawable.tab_list));
+        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.tab_list));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("tag3");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("", getDrawable(R.drawable.tab_notice));
+        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.tab_notice));
         //spec.setIndicator("notice");
         tabHost.addTab(spec);
 
@@ -750,7 +751,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     notice.dismiss();
-                    Toast.makeText(getApplicationContext(), "제목내용 add성공", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "공지 생성 성공", Toast.LENGTH_SHORT).show();
                     //서버에 공지 제목,내용 ,'시간' 보내기
                     //dataManager.noticeData.updateNotice(notice.getNoticeTitle(), notice.getNoticeContent(), notice.getNoticeTime(), dataManager.groupData.getGroup_name());
                     dataManager.connectURL2(Protocol.URL_CREATE_NOTICE, notice.getNoticeTitle(), notice.getNoticeContent(),
@@ -816,7 +817,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(marker.getTitle().equals("목적지")) {
-                    Toast.makeText(getApplicationContext(), "모오오오옥저어어어억", Toast.LENGTH_LONG).show();
                     mMapInfoWindowAdapter.getInfoContents(marker);
                 }
                 else {

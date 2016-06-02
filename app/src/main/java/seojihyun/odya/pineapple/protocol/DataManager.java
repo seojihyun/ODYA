@@ -573,14 +573,14 @@ public class DataManager extends Application {
                 case Protocol.MESSAGE_MAP_SETLOCATION:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
                         if( !activity.getClass().getSimpleName().equals("MainActivity")) { break; } //***2016-03-07 수정
-                        Toast.makeText(activity, "서버로 내위치 전송 성공", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(activity, "서버로 내위치 전송 성공", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(activity, "RESULT_FAILURE", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case Protocol.MESSAGE_MAP_GETALLUSERLOCATION:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
-                        Toast.makeText(activity, "유저들 정보받기 성공", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(activity, "유저들 정보받기 성공", Toast.LENGTH_SHORT).show();
                         try {
                             JSONArray peoples = jsonObj.getJSONArray(Protocol.KEY_ARRAY);
 
@@ -635,7 +635,7 @@ public class DataManager extends Application {
                             else {
                                 changeActivity("GrouplistActivity");
                             }
-                            Toast.makeText(activity, "그룹 정보받기 성공", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(activity, "그룹 정보받기 성공", Toast.LENGTH_SHORT).show();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -684,7 +684,7 @@ public class DataManager extends Application {
                 case Protocol.MESSAGE_GET_MY_GROUP_USERS_DATA:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
                         if( !activity.getClass().getSimpleName().equals("MainActivity")) { break; } //***2016-03-07 수정
-                        Toast.makeText(activity, "그룹원들의 정보받기 성공", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(activity, "그룹원들의 정보받기 성공", Toast.LENGTH_SHORT).show();
                         //users 객체 클리어
                         users.removeAllElements();
                         try {
@@ -717,7 +717,7 @@ public class DataManager extends Application {
 
                 case Protocol.MESSAGE_CREATE_DESTINATION:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
-                        Toast.makeText(activity, "목적지 추가 성공~~~.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "목적지 추가 성공", Toast.LENGTH_SHORT).show();
                         if( !activity.getClass().getSimpleName().equals("MainActivity")) { break; }
                         //connectURL2(Protocol.URL_GET_ALL_NOTICE_DATA, "", "", "", groupData.getGroup_name());
                         command(Protocol.URL_GET_DESTINATION_DATA, groupData.getGroup_name(), "", "", "", "", "");
@@ -729,7 +729,7 @@ public class DataManager extends Application {
                 /*2016-05-17*/
                 case Protocol.MESSAGE_GET_DESTINATION_DATA:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
-                        Toast.makeText(activity, "목적지 데이터 받기 성공", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(activity, "목적지 데이터 받기 성공", Toast.LENGTH_SHORT).show();
                         //notice 받기
                         //notices.removeAllElements();
                         try {
@@ -780,7 +780,7 @@ public class DataManager extends Application {
                     break;
                 case Protocol.MESSAGE_GET_MY_NOTICE_DATA:
                     if (Protocol.RESULT_SUCCESS.equals(result)) {
-                        Toast.makeText(activity, "공지받기 성공", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(activity, "공지받기 성공", Toast.LENGTH_SHORT).show();
                         Context context = activity;
                         MainActivity mainActivity = (MainActivity)context;
                         //notice 받기

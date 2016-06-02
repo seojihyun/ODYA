@@ -9,9 +9,19 @@
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
+
+    </style>
+
+    <style name="MainActivityTheme" parent="AppTheme">
         <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
+    <style name="ARActivityTheme" parent="AppTheme">
+    <item name="android:windowTranslucentStatus">true</item>
+</style>
+    <style name="FindappleTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 
     <style name="ActionBarStyle" parent="Widget.AppCompat.ActionBar.TabView">
         <item name="elevation">0dp</item>

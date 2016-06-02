@@ -94,6 +94,12 @@ public class UserInfoDialog extends Dialog {
         } else {
 
         }*/
+        mRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
 
     }

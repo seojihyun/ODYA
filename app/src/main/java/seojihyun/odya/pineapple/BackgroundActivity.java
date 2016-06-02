@@ -132,7 +132,11 @@ public class BackgroundActivity extends AppCompatActivity {
 
             //2016-05-05
             //new MessageDialog(currentActivity, newMessage);
+            if(newMessage != null) {
+                //2016-05-03 서지현
+                dataManager.connectURL(Protocol.URL_GET_ALL_GROUP_DATA, dataManager.userData.getUser_phone(), dataManager.userData.getUser_name(), dataManager.userData.getLatitude(), dataManager.userData.getLongitude(), dataManager.userData.getGroup_name());
 
+            }
 
             // Releasing wake lock
             WakeLocker.release();
