@@ -11,7 +11,6 @@
 
 ![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-1.png)
 ![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-2.png)
-![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-3.png)
 
 ## 2. User tab
 현재 그룹원들의 정보를 리스트로 보여주고, 일행 설정, map focus 기능을 제공합니다.
