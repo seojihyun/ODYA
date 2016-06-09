@@ -10,5 +10,5 @@
 
 #실행 화면
 ## 1. Map tab
-![alt tag](https://raw.githubusercontent.com/seojihyun/ODYA/screenshot/MAP-1.png)
+https://raw.githubusercontent.com/seojihyun/ODYA/screenshot/Map-1.png
 
