@@ -38,6 +38,12 @@
 
 ![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/AR-1.png)
 
+# team introduction
+* 한성대학교 컴퓨터공학과 1392019 서지현
+* 한성대학교 컴퓨터공학과 1392003 권기훈
+* 한성대학교 컴퓨터공학과 1392045 김누리
+* 한성대학교 컴퓨터공학과 1392025 양해은
+
 # Information
 * Develop tools    : Android Studio, Mysql5.0, Apache Tomcat, Google Map API
 * Develop language : JAVA, PHP
@@ -47,9 +53,3 @@
 * Server Source Code :
 * Android Source Code : https://github.com/seojihyun/ODYA.git
 
-# team introduction
-
-* 한성대학교 컴퓨터공학과 1392019 서지현
-* 한성대학교 컴퓨터공학과 1392003 권기훈
-* 한성대학교 컴퓨터공학과 1392045 김누리
-* 한성대학교 컴퓨터공학과 1392025 양해은
