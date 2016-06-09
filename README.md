@@ -37,7 +37,7 @@
 
 ![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/AR-1.png)
 
-# team introduction
+# Team introduction
 * 한성대학교 컴퓨터공학과 1392019 서지현
 * 한성대학교 컴퓨터공학과 1392003 권기훈
 * 한성대학교 컴퓨터공학과 1392045 김누리
