@@ -9,8 +9,8 @@
 현재 그룹원들의 위치정보와 공지된 목적지의 위치 정보를 지도에 보여줍니다.
 또한 해당 마커 클릭시 전화 연결, 위치안내(AR) 기능을 제공합니다.
 
-![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-1.png)
-![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-2.png)
+![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-1.bmp)
+![ScreenShot](https://github.com/seojihyun/ODYA/blob/master/screenshot/Map-2.bmp)
 
 ## 2. User tab
 현재 그룹원들의 정보를 리스트로 보여주고, 일행 설정, map focus 기능을 제공합니다.
